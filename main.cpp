@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -10,8 +11,21 @@
 #include <libc.h>
 #include <fstream>
 
+char *string_to_char(std::string & s)
+{
+    char *str;
 
-int maffin()
+    str = new char[s.size() + 1];
+    int i = 0;
+    while (i < s.size()) {
+        str[i] = s.at(i);
+        i++;
+    }
+    str[i] = '\0';
+    return str;
+}
+
+int main()
 {
     struct sockaddr_in addr;
     socklen_t sizeofaddr;
@@ -37,24 +51,29 @@ int maffin()
             char      request[request_buffer_size];
 
             int bytes_recvd = recv(new_connection, request, request_buffer_size - 1, 0);
-
             if (bytes_recvd < 0)
             {
                 fprintf(stderr, "error recv\n");
                 return 0;
             }
             request[bytes_recvd] = '\0';
-
             printf("request:\n%s\n",request);
 
-            char buffer[256];
-            strcat(buffer, "HTTP/1.1 200 OK\n\n");
-          //  strcat(buffer, "<h1>");
-            strcat(buffer, "Hello 1234");
-          //  strcat(buffer, "</h1>");
+            std::ifstream my_file("file", std::ios::in);
+            std::string line;
 
-            send(new_connection, buffer, strlen(buffer), 0);
+            std::string buffer;
+            buffer.append("HTTP/1.1 200 OK\n\n");
+            while (getline(my_file, line))
+            {
+                buffer.append(line);
+                buffer.append("\n");
+            }
+
+            char *buf = string_to_char(buffer);
+            send(new_connection, buf, buffer.size(), 0);
             close(new_connection);
+            delete(buf);
         }
     }
 }

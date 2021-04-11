@@ -28,11 +28,11 @@ void process_request(bigass_struct &bas, struct sockaddr_in &addr, int sockfd)
     //send_responce()
 
 
-    // std::cout << "request:\n" << request << std::endl;
-    // char buffer[256];
-    // strcat(buffer, "HTTP/1.1 200 OK\n\n");
-    // strcat(buffer, "Hello 1234");
+    std::cout << "request:\n" << request << std::endl;
+    char buffer[256];
+    strcat(buffer, "HTTP/1.1 200 OK\n\n");
+    strcat(buffer, "Hello 1234");
 
-    // send(new_connection, buffer, strlen(buffer), 0);
-    // close(new_connection);
+    send(new_connection, buffer, strlen(buffer), 0);
+    close(new_connection);
 }

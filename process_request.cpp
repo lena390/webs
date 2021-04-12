@@ -27,7 +27,6 @@ void process_request(bigass_struct &bas, struct sockaddr_in &addr, int sockfd)
     //write_responce();
     //send_responce()
 
-
     std::cout << "request:\n" << request << std::endl;
     char buffer[256];
     strcat(buffer, "HTTP/1.1 200 OK\n\n");

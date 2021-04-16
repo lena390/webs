@@ -13,16 +13,6 @@ int main()
         while (1)
         {
             process_request(config_info, addr, sockfd);
-            //Неведомый костыль для корректного завершения работы сервера
-            //Потом надо будет как - нибудь исправить его @Tanos
-            char c;
-            std::cin >> c;
-            if (c == '1')
-            {
-                send(sockfd, "END", 3, 0);
-                close(sockfd);
-                break ;
-            }
         }
     }
     else

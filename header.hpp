@@ -8,8 +8,9 @@
 #include <time.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <libc.h>
 #include <fstream>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 typedef struct strct
 {

@@ -5,16 +5,16 @@
 #                                                     +:+ +:+         +:+      #
 #    By: atable <atable@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/04/16 16:05:10 by atable            #+#    #+#              #
-#    Updated: 2021/04/16 16:08:55 by atable           ###   ########.fr        #
+#    Created: 2021/04/20 20:50:00 by atable            #+#    #+#              #
+#    Updated: 2021/04/20 20:51:47 by atable           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
-SRC = launch_server.cpp process_request.cpp webserv.cpp
+SRC = Server.cpp Serv.cpp main.cpp utils.cpp
 OBJ = $(SRC:.cpp=.o)
-HDR = header.hpp
+HDR = headers.hpp Server.hpp Serv.hpp
 
 CC = clang++
 FLAGS = -Wall -Werror -Wextra

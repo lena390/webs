@@ -30,12 +30,12 @@ Serv::~Serv( void )
  ************************GETTERS***************************
  *********************************************************/
 
-std::map<int, std::string> &	Serv::getRequest ( void ) 
+std::map<int, std::string> & Serv::getRequest ( void ) 
 {
 	return this->_request;
 }
 
-struct sockaddr_in &			Serv::getAddress( void )
+struct sockaddr_in & Serv::getAddress( void )
 {
 	return this->_addr;
 }
@@ -43,7 +43,7 @@ struct sockaddr_in &			Serv::getAddress( void )
 /**************************INIT****************************
  *************************CONNECT**************************
  **************************CLOSE***************************/
-int								Serv::connectServer(void)
+int Serv::connectServer(void)
 {
 	int	reuse_addr = 1;
 	int	sock;
@@ -70,7 +70,7 @@ int								Serv::connectServer(void)
 	return sock;
 }
 
-void							Serv::initServer( void )
+void Serv::initServer( void )
 {
 	memset(&this->_addr, 0, sizeof(this->_addr));
 	this->_addr.sin_family = AF_INET;
@@ -78,7 +78,7 @@ void							Serv::initServer( void )
 	this->_addr.sin_port = htons(this->_port);
 }
 
-void							Serv::closeSock( int sock )
+void Serv::closeSock( int sock )
 {
 	std::map<int, std::string>::iterator it = this->_request.find(sock);
 	if (it == this->_request.end())
@@ -122,4 +122,26 @@ int Serv::recvServer( int sock )
 	std::cout << buf << std::endl;
 	this->_request[sock] = buf;
 	return 0;
+}
+
+int Serv::sendServer( int sock )
+{
+	int ret;
+	std::string buf = std::to_string(this->_port);
+	std::stringstream response; // сюда будет записываться ответ клиенту
+    std::stringstream response_body;
+	response_body << "<title>Test C++ HTTP Server</title>\n" 
+	<< "<h1>Test page</h1>\n" << "<p>This is body of the test page...</p>\n"
+	<< "<h2>Request headers</h2>\n" << "<pre>" << "on port :" << buf << "</pre>\n" << "<em><small>Test C++ Http Server</small></em>\n";
+    // Формируем весь ответ вместе с заголовками
+    response << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n"
+	<< "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: " << response_body.str().length()
+	<< "\r\n\r\n" << response_body.str();
+	ret = send(sock, response.str().c_str(), response.str().length(), 0);
+	if (ret < 0)
+		std::cerr << RED << "Error send()" << RESET << std::endl;
+	else
+		std::cout << GREEN << "send() complete" << RESET << std::endl;
+	this->closeSock(sock);
+	return ret;
 }

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/04/26 12:57:02 by atable           ###   ########.fr       */
+/*   Updated: 2021/04/26 13:02:11 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ class Serv
 		int		connectServer( void );
 		void	initServer( void );
 		void	closeSock( int );
+
+		int acceptServer( int );
 		
 };
 

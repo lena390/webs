@@ -2,52 +2,55 @@
 
 Serv::Serv( void )
 {
-	this->_socket = -1;
+	this->_port = 0;
 }
 
 Serv::Serv( int port )
 {
-	this->_socket = -1;
 	this->_port = port;
 }
 
-Serv::Serv( const Serv& serv)
+Serv::Serv( const Serv& serv )
 {
 	this->_addr = serv._addr;
 	this->_port = serv._port;
-	this->_socket = serv._socket;
+	this->_request = serv._request;
 }
 
-Serv::~Serv( void ) {}
+Serv::~Serv( void )
+{
+	if (this->_request.empty())
+		return ;
+	for (std::map<int, std::string>::iterator it = this->_request.begin();
+		it != this->_request.end(); it++)
+		this->closeSock(it->first);
+}
 
 int Serv::connectServer(void)
 {
 	int reuse_addr = 1;
-	int ret;
+	int sock;
 
-	this->_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if (this->_socket < 0)
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock < 0)
 		return print_error("socket() error", -1);
 
-	ret = setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr));
-	if (ret < 0)
+	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr)) < 0)
 		return print_error("setsockopt() error", -2);
 
 	this->initServer();
-	ret = bind(this->_socket, (struct sockaddr *)&this->_addr, sizeof(this->_addr));
-	if (ret < 0)
+	if (bind(sock, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) < 0)
 	{
-		close(this->_socket);
+		close(sock);
 		return print_error("bind() error", -4);
 	}
 
-	ret = listen(this->_socket, SOMAXCONN);
-	if (ret < 0)
+	if (listen(sock, SOMAXCONN) < 0)
 	{
-		close(this->_socket);
+		close(sock);
 		return print_error("listen() error", -5);
-	}		
-	return 0;
+	}
+	return sock;
 }
 
 void Serv::initServer( void )
@@ -58,13 +61,18 @@ void Serv::initServer( void )
 	this->_addr.sin_port = htons(this->_port);
 }
 
-int Serv::getSocket( void ) { return this->_socket; }
-
-void Serv::closeSock( void )
+std::map<int, std::string> & Serv::getRequest ( void ) 
 {
-	if (this->_socket > 0)
-		close(this->_socket);
-	this->_socket = -1;
+	return this->_request;
+}
+
+void Serv::closeSock( int sock )
+{
+	std::map<int, std::string>::iterator it = this->_request.find(sock);
+	if (it == this->_request.end())
+		return ;
+	close(it->first);
+	this->_request.erase(it);
 }
 
 struct sockaddr_in & Serv::getAddress( void ) { return this->_addr; }

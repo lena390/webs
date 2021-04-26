@@ -26,10 +26,27 @@ Serv::~Serv( void )
 		this->closeSock(it->first);
 }
 
-int Serv::connectServer(void)
+/**********************************************************
+ ************************GETTERS***************************
+ *********************************************************/
+
+std::map<int, std::string> &	Serv::getRequest ( void ) 
 {
-	int reuse_addr = 1;
-	int sock;
+	return this->_request;
+}
+
+struct sockaddr_in &			Serv::getAddress( void )
+{
+	return this->_addr;
+}
+
+/**************************INIT****************************
+ *************************CONNECT**************************
+ **************************CLOSE***************************/
+int								Serv::connectServer(void)
+{
+	int	reuse_addr = 1;
+	int	sock;
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock < 0)
@@ -53,7 +70,7 @@ int Serv::connectServer(void)
 	return sock;
 }
 
-void Serv::initServer( void )
+void							Serv::initServer( void )
 {
 	memset(&this->_addr, 0, sizeof(this->_addr));
 	this->_addr.sin_family = AF_INET;
@@ -61,12 +78,7 @@ void Serv::initServer( void )
 	this->_addr.sin_port = htons(this->_port);
 }
 
-std::map<int, std::string> & Serv::getRequest ( void ) 
-{
-	return this->_request;
-}
-
-void Serv::closeSock( int sock )
+void							Serv::closeSock( int sock )
 {
 	std::map<int, std::string>::iterator it = this->_request.find(sock);
 	if (it == this->_request.end())
@@ -75,4 +87,39 @@ void Serv::closeSock( int sock )
 	this->_request.erase(it);
 }
 
-struct sockaddr_in & Serv::getAddress( void ) { return this->_addr; }
+
+/*************************ACCEPT***************************
+ ************************RECIEVE***************************
+ *************************SEND*****************************/
+int Serv::acceptServer( int sock )
+{
+	int newfd = accept(sock, 0, 0);
+	if (newfd < 0)
+		std::cerr << RED << "Error accept()" << RESET << std::endl;
+	else
+	{
+		std::cout << GREEN << "Accept complete()" << RESET << std::endl;
+		fcntl(newfd, F_SETFL, O_NONBLOCK);
+	}
+	return newfd;
+}
+
+int Serv::recvServer( int sock )
+{
+	int ret;
+	char buf[BUF_SIZE];
+
+	ret = recv(sock, buf, BUF_SIZE - 1, 0);
+	if (ret <= 0)
+	{
+		if (ret < 0)
+			std::cerr << RED << "Error recv()" << RESET << std::endl;
+		else
+			std::cerr << RED << "Socket close" << RESET << std::endl;
+		close(sock);
+		return -1;
+	}
+	std::cout << buf << std::endl;
+	this->_request[sock] = buf;
+	return 0;
+}

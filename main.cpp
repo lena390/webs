@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 12:52:22 by atable            #+#    #+#             */
-/*   Updated: 2021/04/26 15:15:39 by atable           ###   ########.fr       */
+/*   Updated: 2021/04/26 16:13:29 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int main()
     if (!server.initServer())
     {
         server.startServer();
-        // server.clearServer();
+        server.clearServer();
     }
     return 0;
 }

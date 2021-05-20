@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/04/26 14:15:57 by atable           ###   ########.fr       */
+/*   Updated: 2021/04/26 16:22:50 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # include <map>
 
 # define RED    "\033[31m"
-# define GREEN  "\033[31m"
+# define GREEN  "\033[32m"
 # define RESET  "\033[0m"
 
 # define BUF_SIZE   65536

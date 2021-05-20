@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/04/26 14:13:06 by atable           ###   ########.fr       */
+/*   Updated: 2021/04/26 15:26:12 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Serv
 
 		int acceptServer( int );
 		int recvServer( int );
+		int sendServer( int );
 		
 };
 

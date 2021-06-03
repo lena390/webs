@@ -1,2 +1,2 @@
 # webs
-HTTPS server
+HTTP server

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/04/26 15:26:12 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/09 19:30:38 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define SERV_HPP
 
 #include "headers.hpp"
+#include "Response.hpp"
+#include "Request.hpp"
 
 class Serv
 {
@@ -21,6 +23,7 @@ class Serv
 		std::map<int, std::string>	_request;
 		int                 		_port;
 		struct sockaddr_in  		_addr;
+		t_serv_config				_config;
 	
 	public:
 		Serv( void );
@@ -38,6 +41,8 @@ class Serv
 		int acceptServer( int );
 		int recvServer( int );
 		int sendServer( int );
+
+		int init_request( int );
 		
 };
 

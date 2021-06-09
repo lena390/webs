@@ -6,15 +6,15 @@
 #    By: atable <atable@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/04/20 20:50:00 by atable            #+#    #+#              #
-#    Updated: 2021/04/20 20:51:47 by atable           ###   ########.fr        #
+#    Updated: 2021/06/09 18:22:14 by atable           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
-SRC = Server.cpp Serv.cpp main.cpp utils.cpp
+SRC = Server.cpp Serv.cpp Response.cpp Request.cpp main.cpp utils.cpp
 OBJ = $(SRC:.cpp=.o)
-HDR = headers.hpp Server.hpp Serv.hpp
+HDR = Request.hpp headers.hpp Server.hpp Serv.hpp Response.hpp
 
 CC = clang++
 FLAGS = -Wall -Werror -Wextra
@@ -25,8 +25,8 @@ DBG = -g
 
 all: $(NAME)
 
-$(NAME): $(SRC) $(HDR)
-	$(CC) $(SRC) -o $(NAME)
+$(NAME): $(HDR) $(SRC)
+	$(CC) $(SRC) -o $(NAME) 
 
 clean:
 	rm -rf $(NAME)

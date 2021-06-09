@@ -40,6 +40,18 @@ struct sockaddr_in & Serv::getAddress( void )
 	return this->_addr;
 }
 
+
+int Serv::init_request( int sock )
+{
+	Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
+	if (request.isCorrect() == false)
+	{
+		std::cout << RED << request.getFalseReason() << RESET << std::endl;
+		this->_request.erase(sock);
+		return -1;
+	}
+	return 0;
+}
 /**************************INIT****************************
  *************************CONNECT**************************
  **************************CLOSE***************************/
@@ -119,29 +131,34 @@ int Serv::recvServer( int sock )
 		close(sock);
 		return -1;
 	}
-	std::cout << buf << std::endl;
 	this->_request[sock] = buf;
+	std::cout << GREEN << buf << RESET << std::endl;
 	return 0;
 }
 
 int Serv::sendServer( int sock )
 {
 	int ret;
-	std::string buf = std::to_string(this->_port);
-	std::stringstream response; // сюда будет записываться ответ клиенту
-    std::stringstream response_body;
-	response_body << "<title>Test C++ HTTP Server</title>\n" 
-	<< "<h1>Test page</h1>\n" << "<p>This is body of the test page...</p>\n"
-	<< "<h2>Request headers</h2>\n" << "<pre>" << "on port :" << buf << "</pre>\n" << "<em><small>Test C++ Http Server</small></em>\n";
-    // Формируем весь ответ вместе с заголовками
-    response << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n"
-	<< "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: " << response_body.str().length()
-	<< "\r\n\r\n" << response_body.str();
-	ret = send(sock, response.str().c_str(), response.str().length(), 0);
+	// std::string buf = std::to_string(this->_port);
+	Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
+	Response response;
+    // std::stringstream response_body;
+	// response_body << "<title>Test C++ HTTP Server</title>\n" 
+	// << "<h1>Test page</h1>\n" << "<p>This is body of the test page...</p>\n"
+	// << "<h2>Request headers</h2>\n" << "<pre>" << "on port :" << buf << "</pre>\n" << "<em><small>Test C++ Http Server</small></em>\n";
+    // // Формируем весь ответ вместе с заголовками
+    // response << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n"
+	// << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: " << response_body.str().length()
+	// << "\r\n\r\n" << response_body.str();
+	std::string str = response.write_response(&request, this->_config);
+	std::cout << str << std::endl;
+	ret = send(sock, str.c_str(), str.length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;
 	else
 		std::cout << GREEN << "send() complete" << RESET << std::endl;
 	this->closeSock(sock);
+	// this->_info.erase(sock);
+	this->_request.erase(sock);
 	return ret;
 }

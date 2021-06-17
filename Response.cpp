@@ -109,9 +109,9 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
-    if ((request->getTarget() == config.locations || request->getTarget() == "") && request->getMethod() == config.method) //
+    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     {
-        std::ifstream is("/home/lena/CLionProjects/Webs/" + config.locations);
+        std::ifstream is("start_page.html");
         int length;
         if (is.is_open()) {
             is.seekg (0, is.end);
@@ -121,7 +121,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         }
         else {
             respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 inside get\n");
+            return respond.append("\r\nInternal Error 500\n");
         }
         respond.append("Content-Length: ");
         char *s = itoa(length);

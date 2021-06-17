@@ -17,8 +17,6 @@
 #include "headers.hpp"
 #include "Response.hpp"
 
-class Responce;
-
 class Request_info {
     private:
         bool correct_;

@@ -31,7 +31,7 @@ std::string Response::append_message(std::string & respond, int status_code, std
         message = "HTTP/1.1 405 Method Not Allowed";
         message.append("\r\nAllow: " + location);//
     }
-    else if (status_code == 500) { message = "HTTP/1.1 500 Server error"; }
+    else if (status_code == 500) { message = "HTTP/1.1 500 Internal Server Error"; }
     else if (status_code == 501) { message = "HTTP/1.1 501 Not Implemented"; }
     else if (status_code == 505) { message = "HTTP/1.1 505 HTTP Version Not Supported"; }
     message.append("\r\n");
@@ -40,26 +40,7 @@ std::string Response::append_message(std::string & respond, int status_code, std
     return respond;
 }
 
-std::string Response::HEAD_respond(Request_info * request, std::string & respond, t_serv_config & config) {
-    if (request->getTarget() == config.locations && request->getMethod() == config.method)
-    {
-        respond.append("Content-Language: en\n");
-        std::string stringOK("HTTP/1/1 200 OK\n");
-        stringOK.append(respond);
-        return stringOK;
-    }
-    else if (request->getTarget() != config.locations)
-    {
-        return append_message(respond, 404, config.locations, request);//not found
-    }
-    else if (request->getMethod() != config.method)
-    {
-        return append_message(respond, 405, config.locations, request);//Method Not Allowed
-    }
-    return ""; //Что эта функция должна возвращать????
-}
-
-char * Response::get_file_modif_time(char *path, char * buffer) {
+char * Response::get_file_modif_time(const char *path, char * buffer) {
     struct stat attr;
     struct tm * timeinfo;
 
@@ -91,7 +72,7 @@ std::string Response::get_content_type(const std::string file_name) {
 }
 
 std::string Response::append_body(Request_info * request, std::string & respond, t_serv_config & config) {
-    std::ifstream file("respond.cpp");//config.locations.root
+    std::ifstream file("/home/lena/CLionProjects/Webs/" + config.locations);//config.locations.root
     if (file.is_open()) {
         respond.append("\r\n");
         std::string line;
@@ -102,7 +83,7 @@ std::string Response::append_body(Request_info * request, std::string & respond,
     }
     file.close();
     respond.append("\r\n");
-    return "";              //////Что эта функция должна возвращать?
+    return respond;
 }
 
 char * Response::itoa(int d) {
@@ -124,21 +105,23 @@ char * Response::itoa(int d) {
     }
     return strdup(str);
 }
+std::string Response::HEAD_respond(Request_info * request, std::string & respond, t_serv_config & config) {}
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
-    if (request->getTarget() == config.locations && request->getMethod() == config.method)
+    if ((request->getTarget() == config.locations || request->getTarget() == "") && request->getMethod() == config.method) //
     {
-        std::ifstream is("respond.cpp", std::ifstream::binary);
+        std::ifstream is("/home/lena/CLionProjects/Webs/" + config.locations);
         int length;
-        if (is) {
+        if (is.is_open()) {
             is.seekg (0, is.end);
             length = is.tellg();
             is.seekg (0, is.beg);
             is.close();
         }
         else {
-            append_message(respond, 500, (std::string &) "", request);
+            respond = append_message(respond, 500, (std::string &) "", request);
+            return respond.append("\r\nInternal Error 500 inside get\n");
         }
         respond.append("Content-Length: ");
         char *s = itoa(length);
@@ -147,18 +130,17 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         respond.append("\r\n");
 
         respond.append("Content-Type: ");
-        respond.append(get_content_type("respond.cpp"));
+        respond.append(get_content_type(config.locations)); //
         respond.append("\r\n");
 
         char buffer[40];
         respond.append("Last-Modified: ");
-        char str[12] = "respond.cpp";
-        respond.append(get_file_modif_time(str, buffer));
+        respond.append( get_file_modif_time(config.locations.c_str(), buffer)); //
         respond.append("\r\n");
 
         append_body(request, respond, config);
 
-        std::string stringOK("HTTP/1/1 200 OK\r\n");
+        std::string stringOK("HTTP/1.1 200 OK\r\n");
         stringOK.append(respond);
 
         return respond = stringOK;
@@ -166,13 +148,14 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
     }
     else if (request->getTarget() != config.locations)
     {
-        return append_message(respond, 404, config.locations, request);//not found
+        respond = append_message(respond, 404, config.locations, request);
+        return respond.append("\r\n404 Not Found\n");
     }
     else if (request->getMethod() != config.method)
     {
-        return append_message(respond, 405, config.locations, request);//Method Not Allowed
+        respond = append_message(respond, 405, config.locations, request);
+        return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return "";                  ///////Что эта функция должна возвращать?????????????
 }
 
 std::string Response::write_response(Request_info *request, t_serv_config & config) {
@@ -184,17 +167,21 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
     respond.append(get_formatted_date(buffer));
 
     if (!request->isCorrect()) {
-        return (append_message(respond, 400, config.locations, request));//Bas request
+        respond = append_message(respond, 400, config.locations, request);
+        return respond.append("\r\nBad Request 400\n");
     }
     if (!CheckHTTPVersion(request)) {
-        return (append_message(respond, 505, config.locations, request));//HTTP version not supported
+        respond = append_message(respond, 505, config.locations, request);
+        return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-    std::cout << request->getMethod() << " " << request->getTarget() << std::endl;
+
     if (request->getMethod() == "HEAD")
         respond = HEAD_respond(request, respond, config);
     else if (request->getMethod() == "GET")
         respond = GET_respond(request, respond, config);
-    else append_message(respond, 501, config.locations, request);//метод не реализован
-
+    else {
+        respond = append_message(respond, 501, config.locations, request);
+        respond.append("\r\n Not Implemented 501\n");
+    }
     return respond;
 }

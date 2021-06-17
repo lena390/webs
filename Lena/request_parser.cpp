@@ -22,7 +22,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     str_occurrence = strstr(start, " HTTP/");
     if (str_occurrence == NULL) {
         correct_ = false;
-        false_reason_ = "no HTTP version found\n";
+        false_reason_ = "request is incomplete\n";
         return;
     }
     if (start != str_occurrence) {
@@ -53,7 +53,6 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
        // free(key);
        // free(value);
     }
-
 
     start += 2;
     str_occurrence = strchr(start, '\0');

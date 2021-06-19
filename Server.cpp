@@ -90,12 +90,16 @@ int Server::startServer( void )
 						ret = itc->second->recvServer(i);
 						if (ret < 0)
 						{
+
 							FD_CLR(i, &this->_master);
 							FD_CLR(i, &read_set);
 							this->_client.erase(itc);
 						}
 						else
+						{
 							FD_SET(i, &this->_masterwrt);
+							itc->second->init_request(i);
+						}							
 					}
 				}
 			}

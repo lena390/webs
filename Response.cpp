@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/09 20:40:00 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/11 13:03:06 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ char * Response::itoa(int d) {
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
-    if (request->getTarget() == config.locations && request->getMethod() == config.method)
+    if ((request->getTarget() == config.locations || request->getTarget() == "") && request->getMethod() == config.method)
     {
         std::ifstream is("respond.cpp", std::ifstream::binary);
         int length;
@@ -193,7 +193,10 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
     if (request->getMethod() == "HEAD")
         respond = HEAD_respond(request, respond, config);
     else if (request->getMethod() == "GET")
+    {
+        std::cout << RED << "Here" << RESET << std::endl;
         respond = GET_respond(request, respond, config);
+    }        
     else append_message(respond, 501, config.locations, request);//метод не реализован
 
     return respond;

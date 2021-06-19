@@ -136,29 +136,47 @@ int Serv::recvServer( int sock )
 	return 0;
 }
 
+std::stringstream Serv::pages_to_stream(std::string filename)
+{
+	std::string buf = std::to_string(this->_port);
+	std::stringstream response_body;
+    std::stringstream res;
+	
+
+	std::ifstream in(filename);
+	if (!in.is_open())
+		res << "ERROR";
+	else
+	{
+		std::string line;
+		while(getline(in, line))
+			response_body << line << std::endl;
+			response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl; 
+	}
+	res << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n" << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: "
+	<< response_body.str().length() << "\r\n\r\n" << response_body.str();
+	return res;
+	
+}
+
 int Serv::sendServer( int sock )
 {
 	int ret;
-	// std::string buf = std::to_string(this->_port);
+	
 	Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
 	Response response;
-    // std::stringstream response_body;
-	// response_body << "<title>Test C++ HTTP Server</title>\n" 
-	// << "<h1>Test page</h1>\n" << "<p>This is body of the test page...</p>\n"
-	// << "<h2>Request headers</h2>\n" << "<pre>" << "on port :" << buf << "</pre>\n" << "<em><small>Test C++ Http Server</small></em>\n";
-    // // Формируем весь ответ вместе с заголовками
-    // response << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n"
-	// << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: " << response_body.str().length()
-	// << "\r\n\r\n" << response_body.str();
+    
 	std::string str = response.write_response(&request, this->_config);
 	std::cout << str << std::endl;
-	ret = send(sock, str.c_str(), str.length(), 0);
+
+	std::stringstream res = this->pages_to_stream("start_page.html");
+
+	ret = send(sock, res.str().c_str(), res.str().length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;
 	else
 		std::cout << GREEN << "send() complete" << RESET << std::endl;
 	this->closeSock(sock);
-	// this->_info.erase(sock);
 	this->_request.erase(sock);
 	return ret;
 }

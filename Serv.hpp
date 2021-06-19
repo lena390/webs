@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/06/09 19:30:38 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/11 16:57:59 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class Serv
 		int sendServer( int );
 
 		int init_request( int );
+		std::stringstream pages_to_stream( std::string );
 		
 };
 

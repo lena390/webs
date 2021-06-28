@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:05:43 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 13:07:13 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 # define REQUEST_HPP
 
 #include "headers.hpp"
-
-class Responce;
-class CGI;
 
 class Request_info {
     private:

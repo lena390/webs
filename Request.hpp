@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/06/09 18:11:04 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 12:46:43 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 
 #include "headers.hpp"
 #include "Response.hpp"
+#include "CGI.hpp"
 
 class Responce;
+class CGI;
 
 class Request_info {
     private:

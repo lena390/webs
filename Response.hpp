@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 17:51:40 by atable            #+#    #+#             */
-/*   Updated: 2021/06/09 18:14:48 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 12:46:34 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 # define RESPONCE_HPP
 
 # include "headers.hpp"
-#include "Request.hpp"
+# include "Request.hpp"
+# include "CGI.hpp"
 
 class Request_info;
 
@@ -28,7 +29,6 @@ class Response
         char * get_formatted_date(char * buffer);
         std::string get_content_type(const std::string file_name);
         std::string append_body(Request_info * request, std::string & respond, t_serv_config & config);
-        char * itoa(int d);
         std::string GET_respond(Request_info * request, std::string & respond, t_serv_config & config);
 
     public:

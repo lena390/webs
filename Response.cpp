@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/11 13:03:06 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/19 13:25:24 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,26 +105,6 @@ std::string Response::append_body(Request_info * request, std::string & respond,
     return "";              //////Что эта функция должна возвращать?
 }
 
-char * Response::itoa(int d) {
-    int length = 0;
-    int copy = d;
-    while (copy) {
-        length++;
-        copy = copy / 10;
-    }
-    if (length == 0)
-        return strdup("0");
-    char str[length + 1];
-    str[length] = '\0';
-    int i = length - 1;
-    while (d) {
-        int j = d % 10;
-        d = d / 10;
-        str[i--] = j + 48;
-    }
-    return strdup(str);
-}
-
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
     if ((request->getTarget() == config.locations || request->getTarget() == "") && request->getMethod() == config.method)
@@ -194,7 +174,8 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
         respond = HEAD_respond(request, respond, config);
     else if (request->getMethod() == "GET")
     {
-        std::cout << RED << "Here" << RESET << std::endl;
+        if (config.cgi != "")
+            CGI cgi(request, config);
         respond = GET_respond(request, respond, config);
     }        
     else append_message(respond, 501, config.locations, request);//метод не реализован

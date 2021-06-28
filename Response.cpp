@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:26:23 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 13:28:39 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,26 @@ std::string Response::append_body(Request_info * request, std::string & respond,
     file.close();
     respond.append("\r\n");
     return "";              //////Что эта функция должна возвращать?
+}
+
+char * Response::itoa(int d) {
+    int length = 0;
+    int copy = d;
+    while (copy) {
+        length++;
+        copy = copy / 10;
+    }
+    if (length == 0)
+        return strdup("0");
+    char str[length + 1];
+    str[length] = '\0';
+    int i = length - 1;
+    while (d) {
+        int j = d % 10;
+        d = d / 10;
+        str[i--] = j + 48;
+    }
+    return strdup(str);
 }
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)

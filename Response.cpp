@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:32:10 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 13:33:25 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,22 +184,19 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
     respond.append(get_formatted_date(buffer));
 
     if (!request->isCorrect()) {
-        return (append_message(respond, 400, config.locations, request));//Bas request
+        respond = append_message(respond, 400, config.locations, request);
+        return respond.append("\r\nBad Request 400\n");
     }
     if (!CheckHTTPVersion(request)) {
-        return (append_message(respond, 505, config.locations, request));//HTTP version not supported
+        respond = append_message(respond, 505, config.locations, request);
+        return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-    std::cout << request->getMethod() << " " << request->getTarget() << std::endl;
+
     if (request->getMethod() == "HEAD")
         respond = HEAD_respond(request, respond, config);
     else if (request->getMethod() == "GET")
-    {
-        if (config.cgi != "")
-            CGI cgi(request, config);
         respond = GET_respond(request, respond, config);
-    }        
-    else
-    {
+    else {
         respond = append_message(respond, 501, config.locations, request);
         respond.append("\r\n Not Implemented 501\n");
     }

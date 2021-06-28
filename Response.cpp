@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:28:39 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 13:30:17 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,9 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
             CGI cgi(request, config);
         respond = GET_respond(request, respond, config);
     }        
-    else append_message(respond, 501, config.locations, request);//метод не реализован
-
+    else {
+        respond = append_message(respond, 501, config.locations, request);
+        respond.append("\r\n Not Implemented 501\n");
+    }
     return respond;
 }

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/06/19 13:25:24 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 13:26:23 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
-    if ((request->getTarget() == config.locations || request->getTarget() == "") && request->getMethod() == config.method)
+    if (request->getTarget() == config.locations && request->getMethod() == config.method)
     {
         std::ifstream is("respond.cpp", std::ifstream::binary);
         int length;

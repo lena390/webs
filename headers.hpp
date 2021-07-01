@@ -46,7 +46,8 @@
 
 // Костыль, который нужно удалить, после того, как Глеб напишет свою часть
 typedef struct s_conf {
-    std::string locations = "start_page.html";
+    //std::string locations = "start_page.html";
+    std::string locations = "pic";
     std::string method = "GET";
 } t_serv_config;
 

@@ -31,6 +31,7 @@ std::string Response::append_message(std::string & respond, int status_code, std
         message = "HTTP/1.1 405 Method Not Allowed";
         message.append("\r\nAllow: " + location);//
     }
+    else if (status_code == 202) { message = "HTTP/1.1 202 Accepted"; }
     else if (status_code == 500) { message = "HTTP/1.1 500 Internal Server Error"; }
     else if (status_code == 501) { message = "HTTP/1.1 501 Not Implemented"; }
     else if (status_code == 505) { message = "HTTP/1.1 505 HTTP Version Not Supported"; }
@@ -105,13 +106,47 @@ char * Response::itoa(int d) {
     }
     return strdup(str);
 }
-std::string Response::HEAD_respond(Request_info * request, std::string & respond, t_serv_config & config) {}
+std::string Response::HEAD_respond(Request_info * request, std::string & respond, t_serv_config & config) {
+    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
+    {
+        std::string stringOK("HTTP/1.1 200 OK\r\n");
+        stringOK.append(respond);
+        return respond = stringOK;
+
+    }
+    else if (request->getTarget() != config.locations)
+    {
+        respond = append_message(respond, 404, config.locations, request);
+        return respond.append("\r\n404 Not Found\n");
+    }
+    else if (request->getMethod() != config.method)
+    {
+        respond = append_message(respond, 405, config.locations, request);
+        return respond.append("\r\n405 Method Not Allowed\n");
+    }
+}
+
+std::string Response::DELETE_respond(Request_info * request, std::string & respond, t_serv_config & config) {
+    if (request->getTarget() == "" || request->getTarget() == "start_page.html" || request->getTarget() == "favicon.iso") {
+        respond = append_message(respond, 202, config.locations, request);
+        return respond.append("\r\n404 Accepted\n");
+    }
+    else if (request->getTarget() == config.locations) {
+        //удалить локейшен из конфига
+    }
+    else {
+        respond = append_message(respond, 404, config.locations, request);
+        return respond.append("\r\n404 Not Found\n");
+    }
+}
+
+std::string Response::POST_respond(Request_info * request, std::string & respond, t_serv_config & config) {}
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, t_serv_config & config)
 {
     if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     {
-        std::ifstream is("start_page.html");
+        std::ifstream is(config.locations, std::ifstream::binary);
         int length;
         if (is.is_open()) {
             is.seekg (0, is.end);

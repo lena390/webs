@@ -16,7 +16,7 @@ Request_info::Request_info( void ) { return ; }
 
 Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     char *start = buffer;
-    //parsing method
+    ///parsing method
     char *str_occurrence = strchr(start, '/');
     if (str_occurrence == NULL) {
         correct_ = false;
@@ -30,17 +30,25 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         false_reason_ = "request is incomplete\n";
         return;
     }
-    //parsing request target
-    str_occurrence = strstr(start, " HTTP/");
+
+    ///parsing request target
+    str_occurrence = strstr(start, "?");
     if (str_occurrence == NULL) {
-        correct_ = false;
-        false_reason_ = "no HTTP version found\n";
-        return;
+        str_occurrence = strstr(start, " HTTP/");
+        if (str_occurrence == NULL) {
+            correct_ = false;
+            false_reason_ = "no HTTP version found\n";
+            return;
+        }
     }
-    if (start != str_occurrence) {
-        request_target_ = strndup(start, str_occurrence - start);
+    request_target_ = strndup(start, str_occurrence - start);
+    if (*str_occurrence == '?') {
+        start = str_occurrence + 1;
+        str_occurrence = strstr(start, " HTTP/");
+        qwery_string = strndup(start, str_occurrence - start);
     }
-    //parsing http version
+
+    ///parsing http version
     std::string s(str_occurrence + 6, 3);
     HTTP_version_ = s;
     start = strstr(start, "\r\n") + 1;
@@ -49,7 +57,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         false_reason_ = "request is incomplete\n";
         return;
     }
-    //parsing headers
+    ///parsing headers
     while (strstr(start, ": ")) {
         char* key;
         char* value;

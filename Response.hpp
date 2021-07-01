@@ -30,6 +30,8 @@ class Response
         std::string append_body(Request_info * request, std::string & respond, t_serv_config & config);
         static char * itoa(int d);
         std::string GET_respond(Request_info * request, std::string & respond, t_serv_config & config);
+        std::string POST_respond(Request_info * request, std::string & respond, t_serv_config & config);
+        std::string DELETE_respond(Request_info * request, std::string & respond, t_serv_config & config);
 
     public:
         Response();

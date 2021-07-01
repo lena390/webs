@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/06/09 20:20:42 by atable           ###   ########.fr       */
+/*   Updated: 2021/06/28 12:47:01 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ typedef struct s_conf {
     //std::string locations = "start_page.html";
     std::string locations = "pic";
     std::string method = "GET";
+    std::string cgi = "cgifile";
 } t_serv_config;
 
 int print_error(std::string err, int status);
+char * itoa(int d);
 
 #endif

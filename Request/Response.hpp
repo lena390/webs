@@ -6,16 +6,16 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 17:51:40 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:17:32 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/02 13:06:08 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONCE_HPP
 # define RESPONCE_HPP
 
-# include "headers.hpp"
-# include "Request.hpp"
-# include "CGI.hpp"
+# include "../headers.hpp"
+# include "../Request/Request.hpp"
+# include "../utils/CGI.hpp"
 
 class Request_info;
 

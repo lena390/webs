@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 13:08:18 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/02 13:06:23 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-#include "headers.hpp"
-#include "Response.hpp"
+#include "../headers.hpp"
+#include "../Request/Response.hpp"
 
 class Request_info {
     private:

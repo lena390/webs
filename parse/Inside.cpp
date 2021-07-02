@@ -1,6 +1,6 @@
 #include "Inside.hpp"
 
-std::vector<t_listen>           Inside::getListen() const
+t_listen           Inside::getListen() const
 {
     return (this->listen);
 }
@@ -89,12 +89,13 @@ void    Inside::initListen(std::vector<std::string> arg)
         {
             list.port = ft_atoi(arg[0].c_str());
             list.host = "";
-            for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
-            {
-                if (i->port == list.port)
-                    throw Inside::ExceptionBadArgument();
-            }
-            this->listen.push_back(list);
+            // for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
+            // {
+            //     if (i->port == list.port)
+            //         throw Inside::ExceptionBadArgument();
+            // }
+            this->listen = list;
+            // this->listen.push_back(list);
             return ;
         }
         throw Inside::ExceptionBadArgument();
@@ -109,7 +110,8 @@ void    Inside::initListen(std::vector<std::string> arg)
         if (isNumber(pstr))
         {
             list.port = ft_atoi(pstr.c_str());
-            this->listen.push_back(list);
+            this->listen = list;
+            // this->listen.push_back(list);
             return ;
         }
         throw Inside::ExceptionBadArgument();
@@ -268,8 +270,8 @@ void    Inside::transferArgs(Inside &serv) const
 {
     if (this != &serv)
     {
-        if (serv.listen.empty())
-            serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());
+        // if (serv.listen.empty())
+        //     serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());
         if (serv.root == "")
             serv.root = this->root;
         serv.server_name.insert(serv.server_name.begin(), this->server_name.begin(), this->server_name.end());

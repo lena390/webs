@@ -5,11 +5,7 @@
 # include <map>
 # include "ft_atoi.hpp"
 # include <limits>
-
-typedef struct s_listen {
-    std::string host;
-    int port;
-}               t_listen;
+# include "../headers.hpp"
 
 class Inside
 {
@@ -23,7 +19,7 @@ class Inside
             virtual const char *what() const throw();
         };
 
-        std::vector<t_listen>           getListen() const;
+        t_listen                        getListen() const;
         std::string                     getRoot() const;
         std::vector<std::string>        getServerName() const;
         std::map<std::string, Inside>   getLocation() const;
@@ -33,7 +29,7 @@ class Inside
         bool                            isNumber(const std::string &str);
         int                             decipherIp(std::string Ip);
     private:
-        std::vector<t_listen>           listen;
+        t_listen                        listen;
         std::string                     root;
         std::vector<std::string>        server_name;
         std::map<std::string, Inside>   location;

@@ -5,9 +5,9 @@ Server::Server( void )
 	this->_maxfd = -1;
 }
 
-Server::Server( std::vector<Serv> const & serv )
+Server::Server( std::vector<Inside> const & serv )
 {
-	this->_tmp = serv;
+	this->_info = serv;
 	this->_maxfd = -1;
 	FD_ZERO(&this->_master);
 	FD_ZERO(&this->_masterwrt);
@@ -20,19 +20,25 @@ Server::~Server( void )
 
 int Server::initServer( void )
 {
-	int	sock;
+	int sock;
 
-	for (std::vector<Serv>::iterator it = this->_tmp.begin(); it != this->_tmp.end(); it++)
+	for (std::vector<Inside>::iterator it = this->_info.begin(); it != this->_info.end(); it++)
 	{
-		sock = it->connectServer();
+		Serv serv((*it).getListen().port);
+		sock = serv.connectServer();
 		if (sock > 0)
 		{
-			this->_server[sock] = *it;
+			this->_server[sock] = serv;
 			FD_SET(sock, &this->_master);
 			if (this->_maxfd < sock)
 				this->_maxfd = sock;
 		}
-		// Иначе закрываем все добавленные сокеты, очищаем списки и завершаем выполнение программы
+		else
+		{
+			this->clearServer();
+			return -1;
+		}
+			
 	}
 	return 0;
 }

@@ -6,24 +6,24 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 12:47:18 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/02 13:05:35 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERV_HPP
 # define SERV_HPP
 
-#include "headers.hpp"
-#include "Response.hpp"
-#include "Request.hpp"
+#include "../headers.hpp"
+#include "../Request/Response.hpp"
+#include "../Request/Request.hpp"
 
 class Serv
 {
 	private:
 		std::map<int, std::string>	_request;
-		int                 		_port;
+		int							_port;
 		struct sockaddr_in  		_addr;
-		t_serv_config				_config;
+
 	
 	public:
 		Serv( void );

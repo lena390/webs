@@ -24,6 +24,7 @@ Serv::~Serv( void )
 	for (std::map<int, std::string>::iterator it = this->_request.begin();
 		it != this->_request.end(); it++)
 		this->closeSock(it->first);
+	this->_port = 0;
 }
 
 /**********************************************************
@@ -43,7 +44,8 @@ struct sockaddr_in & Serv::getAddress( void )
 
 int Serv::init_request( int sock )
 {
-	Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
+	const char *str = (this->_request[sock]).c_str();
+	Request_info request(const_cast<char*>(str));
 	if (request.isCorrect() == false)
 	{
 		std::cout << RED << request.getFalseReason() << RESET << std::endl;
@@ -61,19 +63,18 @@ int Serv::connectServer(void)
 	int	sock;
 
 	sock = socket(AF_INET, SOCK_STREAM, 0);
+	
 	if (sock < 0)
 		return print_error("socket() error", -1);
 
 	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse_addr, sizeof(reuse_addr)) < 0)
 		return print_error("setsockopt() error", -2);
-
 	this->initServer();
 	if (bind(sock, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) < 0)
 	{
 		close(sock);
 		return print_error("bind() error", -4);
 	}
-
 	if (listen(sock, SOMAXCONN) < 0)
 	{
 		close(sock);
@@ -151,10 +152,12 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 		std::string line;
 		while(getline(in, line))
 			response_body << line << std::endl;
-			response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl; 
+		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl; 
 	}
+	response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
 	res << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n" << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: "
 	<< response_body.str().length() << "\r\n\r\n" << response_body.str();
+	// closedir(dir);
 	return res;
 	
 }
@@ -163,10 +166,10 @@ int Serv::sendServer( int sock )
 {
 	int ret;
 	
-	Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
-	Response response;
+	// Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
+	// Response response;
     
-	std::string str = response.write_response(&request, this->_config);
+	std::string str;// = response.write_response(&request, this->_config);
 	std::cout << str << std::endl;
 
 	std::stringstream res = this->pages_to_stream("start_page.html");

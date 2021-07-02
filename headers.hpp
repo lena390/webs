@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/06/28 12:47:01 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/02 14:17:16 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # include <arpa/inet.h>
 # include "fcntl.h"
 # include <sys/ioctl.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 # include <sstream>
 
@@ -37,6 +39,8 @@
 # include <ctime>
 # include <fstream>
 # include <sys/stat.h>
+
+# include <dirent.h>
 
 # define RED    "\033[31m"
 # define GREEN  "\033[32m"
@@ -50,6 +54,11 @@ typedef struct s_conf {
     std::string method = "GET";
     std::string cgi = "cgifile";
 } t_serv_config;
+
+typedef struct s_listen {
+    std::string host;
+    int port;
+}               t_listen;
 
 int print_error(std::string err, int status);
 char * itoa(int d);

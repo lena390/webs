@@ -24,6 +24,7 @@ class Request_info {
         std::string method_;
         std::string request_target_;
         std::string HTTP_version_;
+        std::string qwery_string;
         std::map<std::string, std::string> headers_;
         char* body_;
         char* request_;        

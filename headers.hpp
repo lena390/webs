@@ -48,13 +48,13 @@
 
 # define BUF_SIZE   65536
 
-// Костыль, который нужно удалить, после того, как Глеб напишет свою часть
-typedef struct s_conf {
-    //std::string locations = "start_page.html";
-    std::string locations = "pic";
-    std::string method = "GET";
-    std::string cgi = "cgifile";
-} t_serv_config;
+//// Костыль, который нужно удалить, после того, как Глеб напишет свою часть
+//typedef struct s_conf {
+//    //std::string locations = "start_page.html";
+//    std::string locations = "pic";
+//    std::string method = "GET";
+//    std::string cgi = "cgifile";
+//} t_serv_config;
 
 typedef struct s_listen {
     std::string host;

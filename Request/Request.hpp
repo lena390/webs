@@ -28,7 +28,7 @@ class Request_info {
         std::string qwery_string;
         std::map<std::string, std::string> headers_;
         char* body_;
-        char* request_;        
+        char* request_;
     
     public:
         Request_info();

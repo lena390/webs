@@ -90,9 +90,46 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 }
 
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
-    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
+    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        request->getBody();
+        char* body = request->getBody();
+        std::ofstream myfile;
+        if (myfile.is_open()) {
+            myfile.open(request->getTarget());
+            myfile << request->getBody();
+            myfile.close();
+        }
+        else {
+            return respond.append("\r\nInternal Error 500\n");
+        }
+
+        config.getLocation()[request->getTarget()] = ;
+
+        std::string stringOK("HTTP/1.1 201 OK\r\n");
+        stringOK.append(respond);
+        return respond = stringOK;
+    }
+    else if (config.getLocation().count(request->getTarget()))
+    {
+        respond = append_message(respond, 404, request->getTarget(), request);
+        return respond.append("\r\n404 Not Found\n");
+    }
+    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
+    {
+        respond = append_message(respond, 405, request->getTarget(), request);
+        return respond.append("\r\n405 Method Not Allowed\n");
+    }
+    return "puk";
+}
+
+std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
+    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
+    {
+        config.getLocation().erase(request->getTarget());
+
+        std::string stringOK("HTTP/1.1 200 OK\r\n");
+        stringOK.append(respond);
+        return respond = stringOK;
     }
     else if (config.getLocation().count(request->getTarget()))
     {
@@ -106,10 +143,6 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
     }
 }
 
-std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
-
-}
-
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
 {}
@@ -120,8 +153,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
 //    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        //std::ifstream is(config.locations, std::ifstream::binary);
-        std::ifstream is("", std::ifstream::binary);
+        std::ifstream is(request->getTarget(), std::ifstream::binary);
 
         int length;
         if (is.is_open()) {

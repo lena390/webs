@@ -73,7 +73,7 @@ std::string Response::get_content_type(const std::string file_name) {
         return "application/octet-stream";
 }
 
-std::string Response::append_body(Request_info * request, std::string & respond, t_serv_config & config) {
+std::string Response::append_body(Request_info * request, std::string & respond, Inside & config) {
     //std::ifstream file("/home/lena/CLionProjects/Webs/" + config.locations);//config.locations.root
     std::ifstream file("/home/lena/CLionProjects/Webs/");//config.locations.root
     if (file.is_open()) {
@@ -90,16 +90,16 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 }
 
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
-    if (...)
+    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        request->getBody()
+        request->getBody();
     }
-    else if (request->getTarget() != config.locations)
+    else if (config.getLocation().count(request->getTarget()))
     {
         respond = append_message(respond, 404, request->getTarget(), request);
         return respond.append("\r\n404 Not Found\n");
     }
-    else if (request->getMethod() != config.method)
+    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
@@ -115,10 +115,10 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 {}
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
-    static std::map<std::string, void (Inside::*)(std::vector<std::string>)> locationMap = config.getLocation();
+    static std::map<std::string, Inside> locationMap = config.getLocation();
 
 //    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
-    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.getLocation().count(request->getTarget()).getMethod()) //
+    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
         //std::ifstream is(config.locations, std::ifstream::binary);
         std::ifstream is("", std::ifstream::binary);
@@ -157,12 +157,12 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         return respond = stringOK;
 
     }
-    else if (request->getTarget() != config.locations)
+    else if (config.getLocation().count(request->getTarget()))
     {
         respond = append_message(respond, 404, request->getTarget(), request);
         return respond.append("\r\n404 Not Found\n");
     }
-    else if (request->getMethod() != config.method)
+    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");

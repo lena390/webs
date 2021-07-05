@@ -20,14 +20,14 @@
 class Request_info {
     private:
         bool correct_;
-        const std::string false_reason_;
-        const std::string method_;
-        const std::string request_target_;
-        const std::string HTTP_version_;
-        const std::string qwery_string;
+        std::string false_reason_;
+        std::string method_;
+        std::string request_target_;
+        std::string HTTP_version_;
+        std::string qwery_string;
         std::map<std::string, std::string> headers_;
-        const char* body_;
-        const char* request_;
+        char* body_;
+        char* request_;
     
     public:
         Request_info();

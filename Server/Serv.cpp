@@ -152,7 +152,7 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 		std::string line;
 		while(getline(in, line))
 			response_body << line << std::endl;
-		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl; 
+		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl;
 	}
 	response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
 	res << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n" << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: "

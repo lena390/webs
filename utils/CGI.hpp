@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/18 14:03:49 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 18:16:12 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 19:29:22 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class Request_info;
 class CGI
 {
     public:
-        CGI( Request_info *, t_serv_config );
+        CGI( Request_info * );
         ~CGI( void );
 CGI( void );
         std::string startCGI( const std::string &, char **env);

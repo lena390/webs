@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/19 12:04:49 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 11:21:38 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 19:29:37 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,24 @@ CGI::CGI( CGI const & cgi )
     this->_env = cgi._env;
 }
 
-CGI::CGI( Request_info * info, t_serv_config config)
+CGI::CGI( Request_info * info )
 {
-    std::map<std::string, std::string> tmp = info->getHeaders();
-    this->_env["CONTETNT_LENGTH"] = itoa(strlen(info->getBody()));
-    this->_env["CONTENT_TYPE"] = tmp["Content-Type"];
-    this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-    this->_env["PATH_INFO"] = info->getTarget();
-    this->_env["PATH_TRANSLATED"] = info->getTarget();
-    this->_env["QUERY_STRING"];
-    this->_env["REMOTE_ADDR"]; // Адрес будет получен из структуры в Insite
-    this->_env["REMOTE_IDENT"] = tmp["Authorization"];
-    this->_env["REMOTE_USER"] = tmp["Authorization"];
-    this->_env["REQUEST_METHOD"] = info->getMethod();
-    this->_env["SCRIPT_NAME"]; // Путь до файла с cgi скриптом
-    this->_env["SERVER_NAME"]; // Также берем у Глеба
-    this->_env["SERVER_PORT"]; // Взять из конфига
-    this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
-    this->_env["SERVER_SOFTWARE"] = "Webserv/1.0";
+    // std::map<std::string, std::string> tmp = info->getHeaders();
+    // this->_env["CONTETNT_LENGTH"] = itoa(strlen(info->getBody()));
+    // this->_env["CONTENT_TYPE"] = tmp["Content-Type"];
+    // this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
+    // this->_env["PATH_INFO"] = info->getTarget();
+    // this->_env["PATH_TRANSLATED"] = info->getTarget();
+    // this->_env["QUERY_STRING"];
+    // this->_env["REMOTE_ADDR"]; // Адрес будет получен из структуры в Insite
+    // this->_env["REMOTE_IDENT"] = tmp["Authorization"];
+    // this->_env["REMOTE_USER"] = tmp["Authorization"];
+    // this->_env["REQUEST_METHOD"] = info->getMethod();
+    // this->_env["SCRIPT_NAME"]; // Путь до файла с cgi скриптом
+    // this->_env["SERVER_NAME"]; // Также берем у Глеба
+    // this->_env["SERVER_PORT"]; // Взять из конфига
+    // this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
+    // this->_env["SERVER_SOFTWARE"] = "Webserv/1.0";
 }
 
 char **CGI::to_array( void )

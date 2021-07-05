@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 14:17:16 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 19:28:51 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,6 @@
 # define RESET  "\033[0m"
 
 # define BUF_SIZE   65536
-
-//// Костыль, который нужно удалить, после того, как Глеб напишет свою часть
-//typedef struct s_conf {
-//    //std::string locations = "start_page.html";
-//    std::string locations = "pic";
-//    std::string method = "GET";
-//    std::string cgi = "cgifile";
-//} t_serv_config;
 
 typedef struct s_listen {
     std::string host;

@@ -51,49 +51,49 @@ int Servers::parsing(const char *filename)
     return (0);
 }
 
-int main(void)
-{
-    Servers raz;
+// int main(void)
+// {
+//     Servers raz;
 
-    raz.parsing("./testconf/serv.conf");
+//     raz.parsing("./testconf/serv.conf");
 
-    //print root
-    std::cout << (raz.getServs())[0].getRoot() << std::endl;
+//     //print root
+//     std::cout << (raz.getServs())[0].getRoot() << std::endl;
 
-    //print server_name
-    std::cout << (raz.getServs())[1].getServerName()[0] << std::endl;
+//     //print server_name
+//     std::cout << (raz.getServs())[1].getServerName()[0] << std::endl;
 
-    //print listen
-    std::cout << (raz.getServs())[0].getListen()[0].port << std::endl;
-    std::cout << (raz.getServs())[0].getListen()[1].port << std::endl;
+//     //print listen
+//     std::cout << (raz.getServs())[0].getListen()[0].port << std::endl;
+//     std::cout << (raz.getServs())[0].getListen()[1].port << std::endl;
 
-    //print error_page
-    std::cout << (raz.getServs())[1].getErrorPage().begin()->first << std::endl;
-    std::cout << (raz.getServs())[1].getErrorPage().begin()->second << std::endl;
+//     //print error_page
+//     std::cout << (raz.getServs())[1].getErrorPage().begin()->first << std::endl;
+//     std::cout << (raz.getServs())[1].getErrorPage().begin()->second << std::endl;
 
-    //print methods
-    std::cout << *(raz.getServs())[0].getMethods().begin() << std::endl;
+//     //print methods
+//     std::cout << *(raz.getServs())[0].getMethods().begin() << std::endl;
 
-    //print cgi pass
-    std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiPass() << std::endl;
+//     //print cgi pass
+//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiPass() << std::endl;
 
-    //print cgi param
-    std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
-    std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
+//     //print cgi param
+//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
+//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
 
-    //print Client Body Size
-    std::cout << (raz.getServs())[0].getClientBodySize() << std::endl;
+//     //print Client Body Size
+//     std::cout << (raz.getServs())[0].getClientBodySize() << std::endl;
 
-    //print Index
-    std::cout << (raz.getServs())[0].getIndex()[0] << std::endl;
+//     //print Index
+//     std::cout << (raz.getServs())[0].getIndex()[0] << std::endl;
 
-    //print location
-    std::map<std::string, Inside>::iterator it;
-    it = raz.getServs()[0].getLocation().begin();
+//     //print location
+//     std::map<std::string, Inside>::iterator it;
+//     it = raz.getServs()[0].getLocation().begin();
     
-    std::cout <<it->first<<std::endl;
-    std::cout <<it->second.getRoot()<<std::endl;
-    it++;
-    std::cout <<it->first<<std::endl;
-    return (0);
-}
+//     std::cout <<it->first<<std::endl;
+//     std::cout <<it->second.getRoot()<<std::endl;
+//     it++;
+//     std::cout <<it->first<<std::endl;
+//     return (0);
+// }

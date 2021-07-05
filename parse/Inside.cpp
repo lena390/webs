@@ -1,6 +1,6 @@
 #include "Inside.hpp"
 
-std::vector<t_listen>               Inside::getListen() const
+t_listen                            Inside::getListen() const
 {
     return (this->listen);
 }
@@ -108,19 +108,21 @@ void    Inside::initListen(std::vector<std::string> arg)
     size_t      sep;
     std::string pstr;
     if (arg.size() != 1)
-        throw Inside::ExceptionBadArgument();
+        throw Inside::ExceptionBadArgument();      
     if ((sep = arg[0].find(":")) == std::string::npos)
     {
         if (isNumber(arg[0]))
         {
             list.port = ft_atoi(arg[0].c_str());
             list.host = "";
-            for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
-            {
-                if (i->port == list.port)
-                    throw Inside::ExceptionBadArgument();
-            }
-            this->listen.push_back(list);
+            // for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
+            // {
+            //     if (i->port == list.port)
+            //         throw Inside::ExceptionBadArgument();
+            // }
+            // this->listen.push_back(list);
+            this->listen = list;
+
             return ;
         }
         throw Inside::ExceptionBadArgument();
@@ -135,7 +137,8 @@ void    Inside::initListen(std::vector<std::string> arg)
         if (isNumber(pstr))
         {
             list.port = ft_atoi(pstr.c_str());
-            this->listen.push_back(list);
+            this->listen = list;
+            // this->listen.push_back(list);
             return ;
         }
         throw Inside::ExceptionBadArgument();
@@ -145,16 +148,14 @@ void    Inside::initListen(std::vector<std::string> arg)
 void    Inside::initRoot(std::vector<std::string> arg)
 {
     if (arg.size() != 1 || this->root != "")
-        throw Inside::ExceptionBadArgument();
+        throw Inside::ExceptionBadArgument();       
     this->root = arg[0];
 }
 
 void    Inside::initServerName(std::vector<std::string> arg)
 {
     if (arg.size() == 0)
-    {
         throw Inside::ExceptionBadArgument();
-    }
     for (int i = 0; i < arg.size(); i++)
         this->server_name.push_back(arg[i]);
 }
@@ -170,7 +171,7 @@ void    Inside::initErrorPage(std::vector<std::string> arg)
         if (isNumber(arg[i]))
             ret_code.push_back(ft_atoi(arg[i].c_str()));
         else if (ret_code.empty())
-            throw Inside::ExceptionBadArgument();
+            throw Inside::ExceptionBadArgument();           
         else if (i == length - 1)
             hz = arg[i];
         else
@@ -338,8 +339,10 @@ void    Inside::transferArgs(Inside &serv) const
 {
     if (this != &serv)
     {
-        if (serv.listen.empty())
-            serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());
+        if (serv.getListen().host == "" && serv.getListen().port == 0)
+            serv.listen = this->listen;
+        // if (serv.listen.empty())
+        //     serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());
         if (serv.root == "")
             serv.root = this->root;
         serv.server_name.insert(serv.server_name.begin(), this->server_name.begin(), this->server_name.end());

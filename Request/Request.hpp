@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 13:06:23 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 15:29:11 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "../headers.hpp"
 #include "../Request/Response.hpp"
+
 
 class Request_info {
     private:

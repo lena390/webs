@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 15:32:05 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/02 15:35:00 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         respond = append_message(respond, 405, config.locations, request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
+    return "";
 }
 
 std::string Response::write_response(Request_info *request, t_serv_config & config) {
@@ -155,9 +156,9 @@ std::string Response::write_response(Request_info *request, t_serv_config & conf
         return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
 
-    if (request->getMethod() == "HEAD")
-        respond = HEAD_respond(request, respond, config);
-    else if (request->getMethod() == "GET")
+    // if (request->getMethod() == "HEAD")
+    //     respond = HEAD_respond(request, respond, config);
+    if (request->getMethod() == "GET")
         respond = GET_respond(request, respond, config);
     else {
         respond = append_message(respond, 501, config.locations, request);

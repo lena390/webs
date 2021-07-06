@@ -15,6 +15,8 @@ class Inside
         Inside(void);
         virtual ~Inside(void);
         int     writeInside(int &i, std::vector<std::string> &file);
+        //Inside  &operator=(std::string newRoot, std::map<int, std::string> newErrorPage, std::set<std::string> newMethods, int newClientBodySize, std::string newCgiPass, std::vector<std::string> newIndex, bool newAutoIndex);
+
 
         class ExceptionBadArgument: public std::exception
         {
@@ -29,8 +31,11 @@ class Inside
         std::set<std::string>               getMethods() const;
         int                                 getClientBodySize() const;
         std::string                         getCgiPass() const;
-        std::map<std::string, std::string>  getCgiParam() const;
+        // std::map<std::string, std::string>  getCgiParam() const;
         std::vector<std::string>            getIndex() const;
+        bool                                getAutoIndex() const;
+
+        Inside(std::string newRoot, std::map<int, std::string> newErrorPage, std::set<std::string> newMethods, int newClientBodySize, std::string newCgiPass, std::vector<std::string> newIndex, bool newAutoIndex);
 
         void                            transferArgs(Inside &server) const;
         static Inside                   initdefaultServ(const char *filename);
@@ -46,8 +51,9 @@ class Inside
         std::set<std::string>               methods;
         int                                 client_body_size;
         std::string                         cgi_pass;
-        std::map<std::string, std::string>  cgi_param;
+        // std::map<std::string, std::string>  cgi_param;
         std::vector<std::string>            index;
+        bool                                autoindex;
 
 
         static std::map<std::string, void (Inside::*)(std::vector<std::string>)>    serverMap;
@@ -63,8 +69,9 @@ class Inside
         void                            initMethods(std::vector<std::string> arg);
         void                            initClientBodySize(std::vector<std::string> arg);
         void                            initCgiPass(std::vector<std::string> arg);
-        void                            initCgiParam(std::vector<std::string> arg);
+        // void                            initCgiParam(std::vector<std::string> arg);
         void                            initIndex(std::vector<std::string> arg);
+        void                            initAutoIndex(std::vector<std::string> arg);
 
         int                             readLocation(int &i, std::vector<std::string> &file);
 

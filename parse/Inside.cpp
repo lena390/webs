@@ -336,7 +336,7 @@ void    Inside::transferArgs(Inside &serv) const
 {
     if (this != &serv)
     {
-        if (serv.getListen().host == "")
+        if (serv.listen.host == "")
             serv.listen = this->listen;
         // if (serv.listen.empty())
         //     serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());

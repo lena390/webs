@@ -78,13 +78,16 @@ int Servers::parsing(const char *filename)
 //     //print methods
 //     std::cout << *(raz.getServs())[0].getMethods().begin() << std::endl;
 
-//     //print cgi pass
-//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiPass() << std::endl;
-
-
     //print cgi param
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
+    
+    //print cgi param
+    // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
+    // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
+    //print autoindex
+    std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
+
     //print autoindex
     std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
 
@@ -115,4 +118,3 @@ int Servers::parsing(const char *filename)
     // config.getLocation()[locName] = new Inside(root, error, meth, 2, cgi, index, false);
     return (0);
 }
-

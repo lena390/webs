@@ -338,8 +338,6 @@ void    Inside::transferArgs(Inside &serv) const
     {
         if (serv.listen.host == "")
             serv.listen = this->listen;
-        // if (serv.listen.empty())
-        //     serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());
         if (serv.root == "")
             serv.root = this->root;
         serv.server_name.insert(serv.server_name.begin(), this->server_name.begin(), this->server_name.end());

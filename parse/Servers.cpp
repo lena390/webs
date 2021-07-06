@@ -91,6 +91,9 @@ int Servers::parsing(const char *filename)
     //print autoindex
     std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
 
+    //print autoindex
+    std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
+
     //print location
     std::map<std::string, Inside>::iterator it;
     it = raz.getServs()[0].getLocation().begin();

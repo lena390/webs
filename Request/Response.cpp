@@ -155,7 +155,9 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
     std::map<std::string, Inside> locationMap = config.getLocation();
 
     if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
-    {
+//    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().find(request->getMethod()))
+
+        {
 //        std::ifstream is(request->getTarget(), std::ifstream::binary);
         std::ifstream is(request->getTarget(), std::ifstream::binary);
         std::cout << request->getTarget() << "!!!!!!!!!\n";

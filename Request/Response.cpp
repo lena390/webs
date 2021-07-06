@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 11:30:17 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 14:17:59 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,12 +117,6 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     static std::map<std::string, Inside> locationMap = config.getLocation();
-    if (config.getCgiPass() != "")
-    {
-        std::cout << RED << "CGI processing" << RESET << std::endl;
-        CGI cgi(request, config);
-        std::cout << cgi.startCGI(config.getCgiPass()) << std::endl;
-    }
 //    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {

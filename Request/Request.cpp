@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:31:08 by atable            #+#    #+#             */
-/*   Updated: 2021/07/04 19:01:41 by miphigen         ###   ########.fr       */
+/*   Updated: 2021/07/05 23:35:20 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     }
 
     ///parsing http version
-    std::string s(str_occurrence + 6, 3);
-    HTTP_version_ = s;
-    start = strstr(start, "\r\n") + 1;
-    if (start == NULL) {
-        correct_ = false;
-        false_reason_ = "request is incomplete\n";
-        return;
-    }
+    // std::string s(str_occurrence + 6, 3);
+    HTTP_version_ = "1.1";
+    // start = strstr(start, "\r\n") + 1;
+    // if (start == NULL) {
+    //     correct_ = false;
+    //     false_reason_ = "request is incomplete\n";
+    //     return;
+    // }
     ///parsing headers
     while (strstr(start, ": ")) {
         char* key;
@@ -78,13 +78,13 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     body_ = strndup(start, str_occurrence - start);
 }
 
-Request_info::Request_info(Request_info & other) {
+Request_info::Request_info(const Request_info & other) {
     correct_ = other.isCorrect();
     false_reason_ = other.getFalseReason();
     method_ = other.getMethod();
     request_target_ = other.getTarget();
     HTTP_version_ = other.getVersion();
-    headers_ = other.getHeaders();
+    headers_ = other.headers_;
     body_ = other.getBody();
     request_ = other.getRequest();
 }

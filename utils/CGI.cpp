@@ -6,11 +6,12 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/19 12:04:49 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 19:29:37 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 14:16:07 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGI.hpp"
+#include <errno.h>
 
 CGI::CGI( void ) { return ; }
 
@@ -21,24 +22,35 @@ CGI::CGI( CGI const & cgi )
     this->_env = cgi._env;
 }
 
-CGI::CGI( Request_info * info )
+CGI::CGI( Request_info * request, Inside & info )
 {
-    // std::map<std::string, std::string> tmp = info->getHeaders();
-    // this->_env["CONTETNT_LENGTH"] = itoa(strlen(info->getBody()));
-    // this->_env["CONTENT_TYPE"] = tmp["Content-Type"];
-    // this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-    // this->_env["PATH_INFO"] = info->getTarget();
-    // this->_env["PATH_TRANSLATED"] = info->getTarget();
-    // this->_env["QUERY_STRING"];
-    // this->_env["REMOTE_ADDR"]; // Адрес будет получен из структуры в Insite
-    // this->_env["REMOTE_IDENT"] = tmp["Authorization"];
-    // this->_env["REMOTE_USER"] = tmp["Authorization"];
-    // this->_env["REQUEST_METHOD"] = info->getMethod();
-    // this->_env["SCRIPT_NAME"]; // Путь до файла с cgi скриптом
-    // this->_env["SERVER_NAME"]; // Также берем у Глеба
-    // this->_env["SERVER_PORT"]; // Взять из конфига
-    // this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
-    // this->_env["SERVER_SOFTWARE"] = "Webserv/1.0";
+    this->_body = request->getBody();
+    std::map<std::string, std::string> tmp = request->getHeaders();
+    if (tmp.find("Auth-Scheme") != tmp.end())
+        this->_env["AUTH_TYPE"] = tmp["Authorization"];
+    this->_env["CONTETNT_LENGTH"] = itoa(strlen(this->_body));
+    this->_env["CONTENT_TYPE"] = tmp["Content-Type"];
+    this->_env["GATEWAY_INTERFACE"] = "CGI/1.1";
+    this->_env["PATH_INFO"] = ""; //Костыль надо исправить
+    this->_env["PATH_TRANSLATED"] = ""; //Костыль надо исправить
+    this->_env["QUERY_STRING"] = ""; //Костыль надо исправить
+    if (info.getListen().host == "")
+        this->_env["REMOTE_ADDR"] = "127.0.0.1";
+    else
+        this->_env["REMOTE_ADDR"] = info.getListen().host;
+    this->_env["REMOTE_IDENT"] = tmp["Authorization"];
+    this->_env["REMOTE_USER"] = tmp["Authorization"];
+    this->_env["SCRIPT_NAME"] = info.getCgiPass();
+    this->_env["REDIRECT_STATUS"] = "200";    
+    if (tmp.find("Hostname") != tmp.end())
+        this->_env["SERVER_NAME"] = tmp["Hostname"];
+    else
+        this->_env["SERVER_NAME"] = this->_env["REMOTEaddr"];
+    this->_env["SERVER_PORT"] = itoa(info.getListen().port);
+    this->_env["SERVER_PROTOCOL"] = "HTTP/1.1";
+    this->_env["SERVER_SOFTWARE"] = "Webserv/1.0";
+    this->_env["REQUEST_METHOD"] = request->getMethod();
+    this->_env["REQUEST_URI"] = ""; //Костыль!!!
 }
 
 char **CGI::to_array( void )
@@ -68,81 +80,60 @@ void CGI::clearEnvArr( char **arr )
     delete [] arr;
 }
 
-
-/// ЖДЕМ НОРМАЛЬНЫЕ ИНВАЙРОМЕНТЫ
-std::string CGI::startCGI( const std::string & filename, char **env)
+std::string CGI::startCGI( const std::string & filename )
 {
-    // STDIN = 0, STDOUT = 1
     int in, out;
     std::string newStr = "";
+    char **env_arr = this->to_array();
 
     FILE *infile = tmpfile();
     FILE *outfile = tmpfile();
     in = fileno(infile);
     out = fileno(outfile);
     
+    write(in, this->_body, strlen(this->_body));
+    lseek(in, 0, SEEK_SET);
+    
     pid_t pid;
     pid = fork();
+
     if (pid < 0)
     {
-        std::cout << RED << "CGI ERROR" << RESET << std::endl;
+        std::cerr << RED << "CGI ERROR" << RESET << std::endl;
         return "error 505";
     }
-    else if (pid == 0) // потомок
+    else if (pid == 0)
     {
-        char *arr[2];
-        arr[0] = new char(filename.length());
-        strncpy(arr[0], filename.c_str(), filename.length());
-        arr[1] = NULL;
-        char * const * nll = NULL;
-
+        char *arr[2] = { const_cast<char*>(filename.c_str()), NULL };
         dup2(in, STDIN_FILENO);
         dup2(out, STDOUT_FILENO);
-        execve(filename.c_str(), nll, env);
-        // std::cout << "Child process done" << std::endl;
+        execve(filename.c_str(), arr, env_arr);
+        std::cerr << RED << "Execve error" << RESET << std::endl;
+        write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
     }
-    else    // родитель
+    else
     {
         waitpid(-1, NULL, 0);
+        lseek(out, 0, SEEK_SET);
         char buf[65523];
         int ret = 1;
         while (ret > 0)
         {
             memset(buf, 0, 65523);
-            ret = read(out, buf, 65523);
+            ret = read(out, buf, 65522);
             newStr += buf;
         }
-        // std::cout << "This is parent" << std::endl;
     }
+
     fclose(infile);
     fclose(outfile);
     close(in);
     close(out);
+
+    this->clearEnvArr(env_arr);
+
     if (!pid)
         exit(0);
-    return newStr;
-
-}
-
-// int main(int argc, char **argv, char **env)
-// {
-//     CGI cgi;
-//     char **arr;
-//     int i = 0;
-//     while(env[i] != NULL)
-//         i++;
-//     arr = new char*[i];
-//     int k;
-//     for (int j = 0; j < i; j++)
-//     {
-//         k = 0;
-//         while (env[j][k] != '\0')
-//             k++;
-//         arr[j] = new char[k];
-//         strncpy(arr[j], env[j], k);
-//     }
     
-//     arr[i] = NULL;
-//     std::cout << cgi.startCGI("cgi_test/cgi_test.py", arr) << std::endl;
-//     return 0;
-// }
+    return newStr;
+}

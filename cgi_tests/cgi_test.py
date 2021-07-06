@@ -1,2 +1,2 @@
-l = [i for i in range(10)]
-print(l)
+#!/usr/bin/python
+print("Hello, world!\r\n")

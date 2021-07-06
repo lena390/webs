@@ -1,6 +1,6 @@
 #include "Inside.hpp"
 
-t_listen                            Inside::getListen() const
+t_listen              Inside::getListen() const
 {
     return (this->listen);
 }

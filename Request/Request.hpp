@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 15:29:11 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 23:03:38 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Request_info {
     public:
         Request_info();
         Request_info(char *buffer);
-        Request_info(Request_info &);
+        Request_info(const Request_info &);
         ~Request_info() { headers_.clear(); }
         Request_info & operator=(const Request_info &) { return *this; }
 
@@ -42,6 +42,7 @@ class Request_info {
         std::string getMethod() const { return method_; }
         std::string getTarget() const { return request_target_; }
         std::string getVersion() const { return HTTP_version_; }
+        std::string getQuery() const { return qwery_string; }
         std::map<std::string, std::string> getHeaders() { return headers_; }
         char* getBody() const { return body_; }
         char* getRequest() const { return request_; }

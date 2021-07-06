@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 12:52:22 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 19:28:33 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 22:00:38 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int main(int argc, char **argv)
 
     if (ret == 1)
         return 0;
-    
     
     Server server(config.getServs());
     if (server.initServer() == -1 || server.startServer() == -1)

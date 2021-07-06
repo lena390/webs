@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:31:08 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 23:35:20 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 19:02:41 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,9 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         return;
     }
 
-    ///parsing request target
-    str_occurrence = strstr(start, "?");
+    // ///parsing request target
+    str_occurrence = strstr(start, " HTTP/");
     if (str_occurrence == NULL) {
-        str_occurrence = strstr(start, " HTTP/");
         if (str_occurrence == NULL) {
             correct_ = false;
             false_reason_ = "no HTTP version found\n";
@@ -42,22 +41,18 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         }
     }
     request_target_ = strndup(start, str_occurrence - start);
-    if (*str_occurrence == '?') {
-        start = str_occurrence + 1;
-        str_occurrence = strstr(start, " HTTP/");
-        qwery_string = strndup(start, str_occurrence - start);
-    }
 
     ///parsing http version
-    // std::string s(str_occurrence + 6, 3);
-    HTTP_version_ = "1.1";
-    // start = strstr(start, "\r\n") + 1;
-    // if (start == NULL) {
-    //     correct_ = false;
-    //     false_reason_ = "request is incomplete\n";
-    //     return;
-    // }
-    ///parsing headers
+    start = strstr(start, "/") + 1;
+    str_occurrence = strstr(start, "\r\n");
+    if (str_occurrence == NULL) {
+        correct_ = false;
+        false_reason_ = "request is incomplete\n";
+        return;
+    }
+    HTTP_version_ = strndup(start, str_occurrence - start);
+
+    // ///parsing headers
     while (strstr(start, ": ")) {
         char* key;
         char* value;
@@ -76,6 +71,19 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     start += 2;
     str_occurrence = strchr(start, '\0');
     body_ = strndup(start, str_occurrence - start);
+}
+
+void Request_info::setQwery( void )
+{
+    char *start = const_cast<char*>((this->request_target_).c_str());
+    start = strchr(start, '?') + 1;
+    if (start == NULL)
+        this->qwery_string = "";
+    else
+    {
+        char *str_occurrence = strchr(start, '\0');
+        this->qwery_string = strndup(start, str_occurrence - start);
+    }
 }
 
 Request_info::Request_info(const Request_info & other) {

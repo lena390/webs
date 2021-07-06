@@ -139,7 +139,8 @@ int Serv::recvServer( int sock )
 		return -1;
 	}
 	this->_request[sock] = buf;
-	std::cout << GREEN << buf << RESET << std::endl;
+	std::cout << "Request:" << std::endl;
+	std::cout << GREEN << "[" << buf << "]" << RESET << std::endl;
 	return 0;
 }
 

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 14:17:59 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 19:05:10 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ std::string Response::write_response(Request_info *request, Inside & config) {
     respond.append(get_formatted_date(buffer));
 
     if (!request->isCorrect()) {
-        std::cout << RED << "ERROR CORRECT" << RESET << std::endl;
         respond = append_message(respond, 400, request->getTarget(), request);
         return respond.append("\r\nBad Request 400\n");
     }
@@ -187,7 +186,6 @@ std::string Response::write_response(Request_info *request, Inside & config) {
         respond = append_message(respond, 505, request->getTarget(), request);
         return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-    
     // if (request->getMethod() == "HEAD")
     //     respond = HEAD_respond(request, respond, config);
     if (request->getMethod() == "GET")

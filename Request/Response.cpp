@@ -103,7 +103,8 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
             return respond.append("\r\nInternal Error 500\n");
         }
 
-        config.getLocation()[request->getTarget()] = ;
+        Inside* test = new Inside();
+//        config.getLocation()[request->getTarget()] = ;
 
         std::string stringOK("HTTP/1.1 201 OK\r\n");
         stringOK.append(respond);
@@ -141,11 +142,14 @@ std::string Response::DELETE_respond(Request_info * request, std::string & respo
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
+    return NULL;
 }
 
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
-{}
+{
+    return NULL;
+}
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     static std::map<std::string, Inside> locationMap = config.getLocation();

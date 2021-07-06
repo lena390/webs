@@ -121,7 +121,6 @@ void    Inside::initListen(std::vector<std::string> arg)
             //         throw Inside::ExceptionBadArgument();
             // }
             this->listen = list;
-
             return ;
         }
         throw Inside::ExceptionBadArgument();

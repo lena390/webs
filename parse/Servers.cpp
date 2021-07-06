@@ -85,7 +85,6 @@ int Servers::parsing(const char *filename)
     //print cgi param
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
-
     //print autoindex
     std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
 

@@ -81,7 +81,7 @@ int Servers::parsing(const char *filename)
     //print cgi param
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
     // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
-    
+
     //print Client Body Size
     std::cout << (raz.getServs())[0].getClientBodySize() << std::endl;
 

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 19:05:10 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 19:11:20 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,25 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 }
 
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
-    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
+    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        request->getBody();
+        char* body = request->getBody();
+        std::ofstream myfile;
+        if (myfile.is_open()) {
+            myfile.open(request->getTarget());
+            myfile << request->getBody();
+            myfile.close();
+        }
+        else {
+            return respond.append("\r\nInternal Error 500\n");
+        }
+
+        Inside* test = new Inside();
+//        config.getLocation()[request->getTarget()] = ;
+
+        std::string stringOK("HTTP/1.1 201 OK\r\n");
+        stringOK.append(respond);
+        return respond = stringOK;
     }
     else if (config.getLocation().count(request->getTarget()))
     {
@@ -104,24 +120,44 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return "";
+    return "puk";
 }
 
 std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
-    return "";
+    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
+    {
+        config.getLocation().erase(request->getTarget());
+
+        std::string stringOK("HTTP/1.1 200 OK\r\n");
+        stringOK.append(respond);
+        return respond = stringOK;
+    }
+    else if (config.getLocation().count(request->getTarget()))
+    {
+        respond = append_message(respond, 404, request->getTarget(), request);
+        return respond.append("\r\n404 Not Found\n");
+    }
+    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
+    {
+        respond = append_message(respond, 405, request->getTarget(), request);
+        return respond.append("\r\n405 Method Not Allowed\n");
+    }
+    return NULL;
 }
 
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
-{ return ""; }
+{
+    return NULL;
+}
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     static std::map<std::string, Inside> locationMap = config.getLocation();
+
 //    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        //std::ifstream is(config.locations, std::ifstream::binary);
-        std::ifstream is("", std::ifstream::binary);
+        std::ifstream is(request->getTarget(), std::ifstream::binary);
 
         int length;
         if (is.is_open()) {
@@ -189,7 +225,7 @@ std::string Response::write_response(Request_info *request, Inside & config) {
     // if (request->getMethod() == "HEAD")
     //     respond = HEAD_respond(request, respond, config);
     if (request->getMethod() == "GET")
-        respond = GET_respond(request, respond, config);        
+        respond = GET_respond(request, respond, config);
     else {
         respond = append_message(respond, 501, request->getTarget(), request);
         respond.append("\r\n Not Implemented 501\n");

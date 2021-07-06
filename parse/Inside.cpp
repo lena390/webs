@@ -40,14 +40,19 @@ std::string                         Inside::getCgiPass() const
     return (this->cgi_pass);
 }
 
-std::map<std::string, std::string>  Inside::getCgiParam() const
-{
-    return (this->cgi_param);
-}
+// std::map<std::string, std::string>  Inside::getCgiParam() const
+// {
+//     return (this->cgi_param);
+// }
 
 std::vector<std::string>            Inside::getIndex() const
 {
     return (this->index);
+}
+
+bool                                Inside::getAutoIndex() const
+{
+    return (this->autoindex);
 }
 
 std::map<std::string, void (Inside::*)(std::vector<std::string>)> Inside::initServMap()
@@ -60,8 +65,9 @@ std::map<std::string, void (Inside::*)(std::vector<std::string>)> Inside::initSe
     init["methods"] = &Inside::initMethods;
     init["client_body_size"] = &Inside::initClientBodySize;
     init["cgi_pass"] = &Inside::initCgiPass;
-    init["cgi_param"] = &Inside::initCgiParam;
+    // init["cgi_param"] = &Inside::initCgiParam;
     init["index"] = &Inside::initIndex;
+    init["autoindex"] = &Inside::initAutoIndex;
     return (init);
 }
 
@@ -73,10 +79,22 @@ std::map<std::string, void (Inside::*)(std::vector<std::string>)> Inside::initLo
     init["methods"] = &Inside::initMethods;
     init["client_body_size"] = &Inside::initClientBodySize;
     init["cgi_pass"] = &Inside::initCgiPass;
-    init["cgi_param"] = &Inside::initCgiParam;
+    // init["cgi_param"] = &Inside::initCgiParam;
     init["index"] = &Inside::initIndex;
+    init["autoindex"] = &Inside::initAutoIndex;
     return (init);
 }
+
+// Inside::Inside(std::string newRoot, std::map<int, std::string> newErrorPage, std::set<std::string> newMethods, int newClientBodySize, std::string newCgiPass, std::vector<std::string> newIndex, bool newAutoIndex)
+// {
+//     this->root = newRoot;
+//     this->error_page = newErrorPage;
+//     this->methods = newMethods;
+//     this->client_body_size = newClientBodySize;
+//     this->cgi_pass = newCgiPass;
+//     this->index = newIndex;
+//     this->autoindex = newAutoIndex;
+// }
 
 std::map<std::string, void (Inside::*)(std::vector<std::string>)> Inside::serverMap = Inside::initServMap();
 std::map<std::string, void (Inside::*)(std::vector<std::string>)> Inside::locationMap = Inside::initLocateMap();
@@ -84,7 +102,8 @@ Inside      Inside::defaultServer = Inside();
 
 Inside::Inside(void):
 root(""),
-client_body_size(0)
+client_body_size(0),
+autoindex(false)
 {
     return ;
 }
@@ -100,6 +119,18 @@ bool Inside::isNumber(const std::string &str)
     if (str.find_first_not_of("0123456789") == std::string::npos)
         res = 1;
     return (res);
+}
+
+void    Inside::initAutoIndex(std::vector<std::string> arg)
+{
+    if (arg.size() != 1)
+        throw Inside::ExceptionBadArgument();
+    if (arg[0] == "off")
+        this->autoindex = false;
+    else if (arg[0] == "on")
+        this->autoindex = true;
+    else
+        throw Inside::ExceptionBadArgument();
 }
 
 void    Inside::initListen(std::vector<std::string> arg)
@@ -208,12 +239,12 @@ void    Inside::initCgiPass(std::vector<std::string> arg)
     this->cgi_pass = arg[0];
 }
 
-void    Inside::initCgiParam(std::vector<std::string> arg)
-{
-    if (arg.size() != 2)
-        throw Inside::ExceptionBadArgument();
-    this->cgi_param[arg[0]] = arg[1];
-}
+// void    Inside::initCgiParam(std::vector<std::string> arg)
+// {
+//     if (arg.size() != 2)
+//         throw Inside::ExceptionBadArgument();
+//     this->cgi_param[arg[0]] = arg[1];
+// }
 
 void    Inside::initIndex(std::vector<std::string> arg)
 {
@@ -353,11 +384,11 @@ void    Inside::transferArgs(Inside &serv) const
         serv.client_body_size = this->client_body_size;
     if (serv.cgi_pass == "")
         serv.cgi_pass = this->cgi_pass;
-    for(std::map<std::string, std::string>::const_iterator it = this->cgi_param.begin(); it != this->cgi_param.end(); it++)
-    {
-        if (serv.cgi_param.find(it->first) == serv.cgi_param.end())
-            serv.cgi_param[it->first] = it->second;
-    }
+    // for(std::map<std::string, std::string>::const_iterator it = this->cgi_param.begin(); it != this->cgi_param.end(); it++)
+    // {
+    //     if (serv.cgi_param.find(it->first) == serv.cgi_param.end())
+    //         serv.cgi_param[it->first] = it->second;
+    // }
     serv.index.insert(serv.index.begin(), this->index.begin(), this->index.end());
     for (std::map<std::string, Inside>::iterator it = serv.location.begin(); it != serv.location.end(); it++)
         serv.transferArgs(it->second);

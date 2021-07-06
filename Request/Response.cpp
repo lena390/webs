@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 15:35:00 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 11:30:17 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,19 +104,25 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
+    return "";
 }
 
 std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
-
+    return "";
 }
 
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
-{}
+{ return ""; }
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     static std::map<std::string, Inside> locationMap = config.getLocation();
-
+    if (config.getCgiPass() != "")
+    {
+        std::cout << RED << "CGI processing" << RESET << std::endl;
+        CGI cgi(request, config);
+        std::cout << cgi.startCGI(config.getCgiPass()) << std::endl;
+    }
 //    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
     if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
@@ -179,6 +185,7 @@ std::string Response::write_response(Request_info *request, Inside & config) {
     respond.append(get_formatted_date(buffer));
 
     if (!request->isCorrect()) {
+        std::cout << RED << "ERROR CORRECT" << RESET << std::endl;
         respond = append_message(respond, 400, request->getTarget(), request);
         return respond.append("\r\nBad Request 400\n");
     }
@@ -186,11 +193,11 @@ std::string Response::write_response(Request_info *request, Inside & config) {
         respond = append_message(respond, 505, request->getTarget(), request);
         return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-
+    
     // if (request->getMethod() == "HEAD")
     //     respond = HEAD_respond(request, respond, config);
     if (request->getMethod() == "GET")
-        respond = GET_respond(request, respond, config);
+        respond = GET_respond(request, respond, config);        
     else {
         respond = append_message(respond, 501, request->getTarget(), request);
         respond.append("\r\n Not Implemented 501\n");

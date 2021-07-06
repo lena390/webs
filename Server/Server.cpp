@@ -24,7 +24,7 @@ int Server::initServer( void )
 
 	for (std::vector<Inside>::iterator it = this->_info.begin(); it != this->_info.end(); it++)
 	{
-		Serv serv((*it).getListen().port);
+		Serv serv((*it).getListen().port, *it);
 		sock = serv.connectServer();
 		if (sock > 0)
 		{

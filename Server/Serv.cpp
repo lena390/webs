@@ -5,9 +5,10 @@ Serv::Serv( void )
 	this->_port = 0;
 }
 
-Serv::Serv( int port )
+Serv::Serv( int port, Inside & info )
 {
 	this->_port = port;
+	this->_servInfo = info;
 }
 
 Serv::Serv( const Serv& serv )
@@ -15,6 +16,7 @@ Serv::Serv( const Serv& serv )
 	this->_addr = serv._addr;
 	this->_port = serv._port;
 	this->_request = serv._request;
+	this->_servInfo = serv._servInfo;
 }
 
 Serv::~Serv( void )
@@ -45,13 +47,14 @@ struct sockaddr_in & Serv::getAddress( void )
 int Serv::init_request( int sock )
 {
 	const char *str = (this->_request[sock]).c_str();
-	Request_info request(const_cast<char*>(str));
-	if (request.isCorrect() == false)
+	Request_info *request = new Request_info(const_cast<char*>(str));
+	if (request->isCorrect() == false)
 	{
-		std::cout << RED << request.getFalseReason() << RESET << std::endl;
+		std::cout << RED << request->getFalseReason() << RESET << std::endl;
 		this->_request.erase(sock);
 		return -1;
 	}
+	this->_parseRequest[sock] = request;
 	return 0;
 }
 /**************************INIT****************************
@@ -87,7 +90,10 @@ void Serv::initServer( void )
 {
 	memset(&this->_addr, 0, sizeof(this->_addr));
 	this->_addr.sin_family = AF_INET;
-	this->_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	if (this->_servInfo.getListen().host == "")
+		this->_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	else
+		this->_addr.sin_addr.s_addr = inet_addr(toCharStr(this->_servInfo.getListen().host));
 	this->_addr.sin_port = htons(this->_port);
 }
 
@@ -154,7 +160,7 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 			response_body << line << std::endl;
 		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl;
 	}
-	response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
+	// response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
 	res << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n" << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: "
 	<< response_body.str().length() << "\r\n\r\n" << response_body.str();
 	// closedir(dir);
@@ -165,9 +171,9 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 int Serv::sendServer( int sock )
 {
 	int ret;
-	
-	// Request_info request(const_cast<char*>((this->_request[sock]).c_str()));
-	// Response response;
+
+	Response response;
+	response.write_response(this->_parseRequest[sock], this->_servInfo);
     
 	std::string str;// = response.write_response(&request, this->_config);
 	std::cout << str << std::endl;
@@ -180,6 +186,7 @@ int Serv::sendServer( int sock )
 	else
 		std::cout << GREEN << "send() complete" << RESET << std::endl;
 	this->closeSock(sock);
-	this->_request.erase(sock);
+	delete this->_parseRequest[sock];
+	this->_parseRequest.erase(sock);
 	return ret;
 }

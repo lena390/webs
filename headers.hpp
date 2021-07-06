@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 19:28:51 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 21:10:08 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ typedef struct s_listen {
 
 int print_error(std::string err, int status);
 char * itoa(int d);
+char * toCharStr( std::string str );
 
 #endif

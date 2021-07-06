@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:02:10 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 13:05:35 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/05 23:29:07 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,16 @@
 class Serv
 {
 	private:
-		std::map<int, std::string>	_request;
-		int							_port;
-		struct sockaddr_in  		_addr;
+		std::map<int, std::string>		_request;
+		std::map<int, Request_info*>	_parseRequest;
+		int								_port;
+		struct sockaddr_in  			_addr;
+		Inside							_servInfo;
 
 	
 	public:
 		Serv( void );
-		Serv( int );
+		Serv( int, Inside & );
 		Serv( const Serv & serv );
 		~Serv( void );
 

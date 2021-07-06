@@ -173,14 +173,12 @@ int Serv::sendServer( int sock )
 	int ret;
 
 	Response response;
-	response.write_response(this->_parseRequest[sock], this->_servInfo);
-    
-	std::string str;// = response.write_response(&request, this->_config);
+	std::string str = response.write_response(this->_parseRequest[sock], this->_servInfo);// = response.write_response(&request, this->_config);
 	std::cout << str << std::endl;
 
-	std::stringstream res = this->pages_to_stream("start_page.html");
+	// std::stringstream res = this->pages_to_stream("start_page.html");
 
-	ret = send(sock, res.str().c_str(), res.str().length(), 0);
+	ret = send(sock, str.c_str(), str.length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;
 	else

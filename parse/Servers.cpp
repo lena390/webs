@@ -63,9 +63,13 @@ int Servers::parsing(const char *filename)
 //     //print server_name
 //     std::cout << (raz.getServs())[1].getServerName()[0] << std::endl;
 
-//     //print listen
-//     std::cout << (raz.getServs())[0].getListen()[0].port << std::endl;
-//     std::cout << (raz.getServs())[0].getListen()[1].port << std::endl;
+
+    //print listen
+    std::cout << " LISTEN " << std::endl << std::endl;
+    std::cout << (raz.getServs())[0].getListen().port << std::endl;
+    std::cout << (raz.getServs())[1].getListen().port << std::endl;
+    std::cout<< std::endl;
+
 
 //     //print error_page
 //     std::cout << (raz.getServs())[1].getErrorPage().begin()->first << std::endl;
@@ -77,23 +81,39 @@ int Servers::parsing(const char *filename)
 //     //print cgi pass
 //     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiPass() << std::endl;
 
-//     //print cgi param
-//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
-//     std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
 
-//     //print Client Body Size
-//     std::cout << (raz.getServs())[0].getClientBodySize() << std::endl;
+    //print cgi param
+    // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->first << std::endl;
+    // std::cout << (raz.getServs())[1].getLocation().begin()->second.getCgiParam().begin()->second << std::endl;
 
-//     //print Index
-//     std::cout << (raz.getServs())[0].getIndex()[0] << std::endl;
+    //print autoindex
+    std::cout << "autoindex = " << (raz.getServs())[0].getAutoIndex() << std::endl;
 
-//     //print location
-//     std::map<std::string, Inside>::iterator it;
-//     it = raz.getServs()[0].getLocation().begin();
+    //print location
+    std::map<std::string, Inside>::iterator it;
+    it = raz.getServs()[0].getLocation().begin();
     
-//     std::cout <<it->first<<std::endl;
-//     std::cout <<it->second.getRoot()<<std::endl;
-//     it++;
-//     std::cout <<it->first<<std::endl;
-//     return (0);
-// }
+    std::cout <<it->first<<std::endl;
+    std::cout <<it->second.getRoot()<<std::endl;
+    it++;
+    std::cout <<it->first<<std::endl;
+
+    std::cout << "NEW LOCATION" << std::endl << std::endl;
+
+    // Inside config;
+    // std::string locName = "/abc" ;
+    // std::string root = "/";
+    // std::string errorpage = "/error";
+    // std::map<int, std::string> error;
+    // std::string cgi = "/huh";
+    // std::set<std::string> meth;
+    // meth.insert("/kok");
+    // std::vector<std::string> index;
+    // index.push_back("cooll");
+    // error[399] = errorpage;
+    // // root   errorpage       method   clientBodySize  cgiPass  Index    autoindex
+    // // str  map(int, str)     set(str)       int         str    vec(str)   bool
+    // config.getLocation()[locName] = new Inside(root, error, meth, 2, cgi, index, false);
+    return (0);
+}
+

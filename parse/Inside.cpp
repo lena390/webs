@@ -120,7 +120,6 @@ void    Inside::initListen(std::vector<std::string> arg)
             //     if (i->port == list.port)
             //         throw Inside::ExceptionBadArgument();
             // }
-            // this->listen.push_back(list);
             this->listen = list;
 
             return ;

@@ -115,13 +115,13 @@ void    Inside::initListen(std::vector<std::string> arg)
         {
             list.port = ft_atoi(arg[0].c_str());
             list.host = "";
-            for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
-            {
-                if (i->port == list.port)
-                    throw Inside::ExceptionBadArgument();
-            }
-            this->listen.push_back(list);
-            
+            // for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
+            // {
+            //     if (i->port == list.port)
+            //         throw Inside::ExceptionBadArgument();
+            // }
+            // this->listen.push_back(list);
+            this->listen = list;
 
             return ;
         }
@@ -137,8 +137,7 @@ void    Inside::initListen(std::vector<std::string> arg)
         if (isNumber(pstr))
         {
             list.port = ft_atoi(pstr.c_str());
-            
-            this->listen.push_back(list);
+            this->listen = list;
             return ;
         }
         throw Inside::ExceptionBadArgument();
@@ -339,7 +338,7 @@ void    Inside::transferArgs(Inside &serv) const
 {
     if (this != &serv)
     {
-        if (serv.getListen().host == "" && serv.getListen().port == 0)
+        if (serv.getListen().host == "")
             serv.listen = this->listen;
         // if (serv.listen.empty())
         //     serv.listen.insert(serv.listen.begin(), this->listen.begin(), this->listen.end());

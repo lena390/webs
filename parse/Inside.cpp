@@ -115,13 +115,13 @@ void    Inside::initListen(std::vector<std::string> arg)
         {
             list.port = ft_atoi(arg[0].c_str());
             list.host = "";
-            // for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
-            // {
-            //     if (i->port == list.port)
-            //         throw Inside::ExceptionBadArgument();
-            // }
-            // this->listen.push_back(list);
-            this->listen = list;
+            for (std::vector<t_listen>::const_iterator i = listen.begin(); i != listen.end(); i++)
+            {
+                if (i->port == list.port)
+                    throw Inside::ExceptionBadArgument();
+            }
+            this->listen.push_back(list);
+            
 
             return ;
         }
@@ -137,8 +137,8 @@ void    Inside::initListen(std::vector<std::string> arg)
         if (isNumber(pstr))
         {
             list.port = ft_atoi(pstr.c_str());
-            this->listen = list;
-            // this->listen.push_back(list);
+            
+            this->listen.push_back(list);
             return ;
         }
         throw Inside::ExceptionBadArgument();

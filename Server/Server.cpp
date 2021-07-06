@@ -73,7 +73,7 @@ int Server::startServer( void )
 		
 		for (size_t i = 0; i <= this->_maxfd; i++)
 		{
-			std::cout << "Try to accept()" << std::endl;
+		//	std::cout << "Try to accept()" << std::endl;
 			if (FD_ISSET(i, &read_set))
 			{
 				std::map<int, Serv>::iterator it = this->_server.find(i);

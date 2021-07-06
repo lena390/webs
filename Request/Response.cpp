@@ -100,7 +100,7 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
             myfile.close();
         }
         else {
-            return respond.append("\r\nInternal Error 500\n");
+            return respond.append("\r\nInternal Error 500 1\n");
         }
 
         Inside* test = new Inside();
@@ -152,12 +152,14 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 }
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
-    static std::map<std::string, Inside> locationMap = config.getLocation();
+    std::map<std::string, Inside> locationMap = config.getLocation();
 
-//    if ((request->getTarget() == config.locations || request->getTarget() == "" || request->getTarget() == "favicon.ico") && request->getMethod() == config.method) //
-    if ((config.getLocation().count(request->getTarget())|| request->getTarget() == "" || request->getTarget() == "favicon.ico") && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
+    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
     {
+//        std::ifstream is(request->getTarget(), std::ifstream::binary);
         std::ifstream is(request->getTarget(), std::ifstream::binary);
+        std::cout << request->getTarget() << "!!!!!!!!!\n";
+
 
         int length;
         if (is.is_open()) {
@@ -168,7 +170,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         }
         else {
             respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500\n");
+            return respond.append("\r\nInternal Error 500 2\n");
         }
         respond.append("Content-Length: ");
         char *s = itoa(length);
@@ -193,12 +195,12 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         return respond = stringOK;
 
     }
-    else if (config.getLocation().count(request->getTarget()))
+    else if (!locationMap.count(request->getTarget()))
     {
         respond = append_message(respond, 404, request->getTarget(), request);
-        return respond.append("\r\n404 Not Found\n");
+        return respond.append("\r\n404 Not Found\nlocation " + request->getTarget() + " not found\n");
     }
-    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
+    else if (!locationMap[request->getTarget()].getMethods().count(request->getMethod()))
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
@@ -213,6 +215,14 @@ std::string Response::write_response(Request_info *request, Inside & config) {
     char buffer[38];
     respond.append("Date: ");
     respond.append(get_formatted_date(buffer));
+
+    std::map<std::string, Inside> locationMap = config.getLocation();
+    std::vector<std::string> key;
+    for(std::map<std::string, Inside>::iterator it = locationMap.begin(); it != locationMap.end(); ++it) {
+        key.push_back(it->first);
+        std::cout << "Key: " << it->first << std::endl;
+    }
+
 
     if (!request->isCorrect()) {
         respond = append_message(respond, 400, request->getTarget(), request);

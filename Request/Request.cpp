@@ -31,7 +31,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         return;
     }
 
-    // ///parsing request target
+     ///parsing request target
     str_occurrence = strstr(start, " HTTP/");
     if (str_occurrence == NULL) {
         if (str_occurrence == NULL) {
@@ -40,10 +40,9 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
             return;
         }
     }
-    request_target_ = strndup(start, str_occurrence - start);
-    if (request_target_ == "" || request_target_ == "favicon.ico") {
-        request_target_ = "start_page.html";
-//        request_target_ = "/home/lena/CLionProjects/webs111/start_page.html";
+    request_target_ = strndup(start - 1, str_occurrence - start + 1);
+    if (request_target_ == "" || request_target_ == "/favicon.ico") {
+        request_target_ = "/start_page";
     }
     ///parsing http version
     start = strstr(start, "/") + 1;

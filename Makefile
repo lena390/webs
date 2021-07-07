@@ -31,7 +31,7 @@ DBG = -g
 all: $(NAME)
 
 $(NAME): $(HDR) $(PARSE_HDR) $(SRC) $(PARSE_SRC)
-	$(CC) $(SRC) $(PARSE_SRC) -o $(NAME) 
+	$(CC) -g $(SRC) $(PARSE_SRC) -o $(NAME)
 
 clean:
 	rm -rf $(NAME)

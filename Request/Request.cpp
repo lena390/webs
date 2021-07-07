@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:31:08 by atable            #+#    #+#             */
-/*   Updated: 2021/07/07 15:40:25 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 17:58:54 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         return;
     }
 
-    // ///parsing request target
+     ///parsing request target
     str_occurrence = strstr(start, " HTTP/");
     if (str_occurrence == NULL) {
         if (str_occurrence == NULL) {

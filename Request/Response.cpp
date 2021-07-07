@@ -74,8 +74,12 @@ std::string Response::get_content_type(const std::string file_name) {
 }
 
 std::string Response::append_body(Request_info * request, std::string & respond, Inside & config) {
-    //std::ifstream file("/home/lena/CLionProjects/Webs/" + config.locations);//config.locations.root
-    std::ifstream file("/home/lena/CLionProjects/Webs/");//config.locations.root
+    char cwd[PATH_MAX];
+    if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+        respond = append_message(respond, 500, (std::string &) "", request);
+        return respond.append("\r\nInternal Error 500 get cwd\n");
+    }
+    std::ifstream file(cwd + request->getTarget() + ".html");
     if (file.is_open()) {
         respond.append("\r\n");
         std::string line;
@@ -83,6 +87,9 @@ std::string Response::append_body(Request_info * request, std::string & respond,
             respond.append(line);
             respond.append("\n");
         }
+    }
+    else {
+        respond.append("could not append body");
     }
     file.close();
     respond.append("\r\n");
@@ -145,22 +152,23 @@ std::string Response::DELETE_respond(Request_info * request, std::string & respo
     return NULL;
 }
 
-
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
 {
     return NULL;
 }
+
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     std::map<std::string, Inside> locationMap = config.getLocation();
     if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
-//    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().find(request->getMethod()))
-
         {
-//        std::ifstream is(request->getTarget(), std::ifstream::binary);
-        std::ifstream is(request->getTarget(), std::ifstream::binary);
-//        std::cout << request->getTarget() << "!!!!!!!!!\n";
+        char cwd[PATH_MAX];
+        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+            respond = append_message(respond, 500, (std::string &) "", request);
+            return respond.append("\r\nInternal Error 500 get cwd\n");
+        }
 
+        std::ifstream is(cwd + request->getTarget() + ".html", std::ifstream::binary);
 
         int length;
         if (is.is_open()) {
@@ -171,7 +179,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         }
         else {
             respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 2\n");
+            return respond.append("\r\nInternal Error 500 ifstream open\n");
         }
         respond.append("Content-Length: ");
         char *s = itoa(length);
@@ -233,13 +241,13 @@ std::string Response::write_response(Request_info *request, Inside & config) {
         respond = append_message(respond, 505, request->getTarget(), request);
         return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-    // if (request->getMethod() == "HEAD")
-    //     respond = HEAD_respond(request, respond, config);
-    if (request->getMethod() == "GET")
+     if (request->getMethod() == "HEAD")
+         respond = HEAD_respond(request, respond, config);
+     if (request->getMethod() == "GET")
         respond = GET_respond(request, respond, config);
-    else {
+     else {
         respond = append_message(respond, 501, request->getTarget(), request);
         respond.append("\r\n Not Implemented 501\n");
-    }
-    return respond;
+     }
+     return respond;
 }

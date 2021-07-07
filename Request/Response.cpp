@@ -160,7 +160,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         {
 //        std::ifstream is(request->getTarget(), std::ifstream::binary);
         std::ifstream is(request->getTarget(), std::ifstream::binary);
-        std::cout << request->getTarget() << "!!!!!!!!!\n";
+//        std::cout << request->getTarget() << "!!!!!!!!!\n";
 
 
         int length;

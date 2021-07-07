@@ -41,7 +41,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         }
     }
     request_target_ = strndup(start - 1, str_occurrence - start + 1);
-    if (request_target_ == "" || request_target_ == "/favicon.ico") {
+    if (request_target_ == "/" || request_target_ == "/favicon.ico") {
         request_target_ = "/start_page";
     }
     ///parsing http version

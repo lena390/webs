@@ -67,10 +67,10 @@ std::string Response::get_content_type(const std::string file_name) {
     std::string extension = file_name.substr(pos + 1);
     if (extension == "htm") extension = "html";
     std::string txts = "css, csv, html, htm, ics, js, mjs, txt";
-    if (txts.find(extension) < txts.length() || file_name.find(".") < file_name.length())
-        return "text/" + extension;
-    else
+    if (txts.find(extension) == std::string::npos || file_name.find(".") == std::string::npos)
         return "application/octet-stream";
+    else
+        return "text/" + extension;
 }
 
 std::string Response::append_body(Request_info * request, std::string & respond, Inside & config) {
@@ -99,21 +99,22 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
     if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        char* body = request->getBody();
-        std::ofstream myfile;
+        char cwd[PATH_MAX];
+        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+            respond = append_message(respond, 500, (std::string &) "", request);
+            return respond.append("\r\nInternal Error 500 get cwd\n");
+        }
+        std::string cwd_string(cwd);
+        std::ofstream myfile(cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget(), std::fstream::out);
         if (myfile.is_open()) {
-            myfile.open(request->getTarget());
             myfile << request->getBody();
             myfile.close();
         }
         else {
-            return respond.append("\r\nInternal Error 500 1\n");
+            return respond.append("\r\nInternal Error 500 inside POST could not open file\n");
         }
 
-        Inside* test = new Inside();
-//        config.getLocation()[request->getTarget()] = ;
-
-        std::string stringOK("HTTP/1.1 201 OK\r\n");
+        std::string stringOK("HTTP/1.1 201 CREATED\r\n");
         stringOK.append(respond);
         return respond = stringOK;
     }
@@ -127,16 +128,31 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return "puk";
+    return "";
 }
 
 std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
     if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
-        config.getLocation().erase(request->getTarget());
+        char cwd[PATH_MAX];
+        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+            respond = append_message(respond, 500, (std::string &) "", request);
+            return respond.append("\r\nInternal Error 500 get cwd\n");
+        }
+        std::string cwd_string(cwd);
+        std::ofstream myfile(cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget());
+        if (myfile.is_open()) {
+            myfile << "";
+            myfile.close();
+        }
+        else {
+            return respond.append("\r\nInternal Error 500 inside DELETE\n");
+        }
+//        char c[1000] = (cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget()).c_str();
+//        std::remove(c);
+
 
         std::string stringOK("HTTP/1.1 200 OK\r\n");
-        stringOK.append(respond);
         return respond = stringOK;
     }
     else if (config.getLocation().count(request->getTarget()))
@@ -189,7 +205,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         respond.append("\r\n");
 
         respond.append("Content-Type: ");
-        respond.append(get_content_type(request->getTarget())); //
+        respond.append(get_content_type(request->getTarget() + ".html")); //
         respond.append("\r\n");
 
         char buffer[40];
@@ -244,8 +260,12 @@ std::string Response::write_response(Request_info *request, Inside & config) {
     }
      if (request->getMethod() == "HEAD")
          respond = HEAD_respond(request, respond, config);
-     if (request->getMethod() == "GET")
+     else if (request->getMethod() == "GET")
         respond = GET_respond(request, respond, config);
+     else if (request->getMethod() == "DELETE")
+        respond = DELETE_respond(request, respond, config);
+     else if (request->getMethod() == "POST")
+         respond = POST_respond(request, respond, config);
      else {
         respond = append_message(respond, 501, request->getTarget(), request);
         respond.append("\r\n Not Implemented 501\n");

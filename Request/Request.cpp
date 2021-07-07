@@ -42,8 +42,8 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     }
     request_target_ = strndup(start, str_occurrence - start);
     if (request_target_ == "" || request_target_ == "favicon.ico") {
-//        request_target_ = "start_page.html";
-        request_target_ = "/home/lena/CLionProjects/webs111/start_page.html";
+        request_target_ = "start_page.html";
+//        request_target_ = "/home/lena/CLionProjects/webs111/start_page.html";
     }
     ///parsing http version
     start = strstr(start, "/") + 1;

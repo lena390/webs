@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 22:27:42 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 15:30:10 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,6 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     std::map<std::string, Inside> locationMap = config.getLocation();
-
     if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
 //    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().find(request->getMethod()))
 
@@ -171,7 +170,6 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
             is.close();
         }
         else {
-            std::cout << RED << "HERE" << RESET << std::endl;
             respond = append_message(respond, 500, (std::string &) "", request);
             return respond.append("\r\nInternal Error 500 2\n");
         }

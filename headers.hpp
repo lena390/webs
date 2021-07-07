@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:12:39 by atable            #+#    #+#             */
-/*   Updated: 2021/07/07 11:38:17 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 17:51:03 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,6 @@ int print_error(std::string err, int status);
 char * itoa(int d);
 char * toCharStr( std::string str );
 char * strcut( char * start, char * end, int size );
+std::string autoindex( std::string path, std::string host, int port);
 
 #endif

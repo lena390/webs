@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 19:09:50 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 20:41:18 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Request_info {
         char* getRequest() const { return request_; }
 
         void setQwery( void );
+        void setBody( char * );
 };
 
 #endif

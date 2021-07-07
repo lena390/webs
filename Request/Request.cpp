@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:31:08 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 19:02:41 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 20:42:12 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,10 @@ Request_info::Request_info(const Request_info & other) {
     headers_ = other.headers_;
     body_ = other.getBody();
     request_ = other.getRequest();
+}
+
+void Request_info::setBody( char * newBody )
+{
+    delete [] this->body_;
+    this->body_ = newBody;
 }

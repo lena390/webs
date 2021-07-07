@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 19:11:20 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/06 22:27:42 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
             is.close();
         }
         else {
+            std::cout << RED << "HERE" << RESET << std::endl;
             respond = append_message(respond, 500, (std::string &) "", request);
             return respond.append("\r\nInternal Error 500\n");
         }

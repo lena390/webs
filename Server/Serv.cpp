@@ -43,17 +43,21 @@ struct sockaddr_in & Serv::getAddress( void )
 	return this->_addr;
 }
 
+char * Serv::decodeChunkedBody( char * oldBody)
+{
+	return NULL;
+}
 
 int Serv::init_request( int sock )
 {
 	const char *str = (this->_request[sock]).c_str();
 	Request_info *request = new Request_info(const_cast<char*>(str));
-	if (request->isCorrect() == false)
+	if ((request->getHeaders()).find("Transfer-Encoding") != request->getHeaders().end() &&
+		(request->getHeaders())["Transfer-Encoding"] == "chunked")
 	{
-		std::cout << RED << request->getFalseReason() << RESET << std::endl;
-		this->_request.erase(sock);
-		return -1;
-	}
+		char *tmp = decodeChunkedBody(request->getBody());
+		request->setBody(tmp);
+	}		
 	this->_parseRequest[sock] = request;
 	return 0;
 }

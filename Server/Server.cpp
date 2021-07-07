@@ -45,21 +45,21 @@ int Server::initServer( void )
 
 int Server::startServer( void )
 {
-	struct timeval	timeout;
+	// struct timeval	timeout;
 	fd_set			read_set;
 	fd_set			write_set;
 	int				ret;
 	
 	while (1)
 	{
-		timeout.tv_sec = 30;
-		timeout.tv_usec = 0;
+		// timeout.tv_sec = 30;
+		// timeout.tv_usec = 0;
 
 		memcpy(&read_set, &this->_master, sizeof(this->_master));
 		memcpy(&write_set, &this->_masterwrt, sizeof(this->_masterwrt));
 		
 		std::cout << "Waiting on select" << std::endl;  
-		ret = select(this->_maxfd + 1, &read_set, &write_set, NULL, &timeout);
+		ret = select(this->_maxfd + 1, &read_set, &write_set, NULL, NULL);
 		if (ret < 0)
 		{
 			print_error("Error server", -1); //Корректно обработать выход с сервера

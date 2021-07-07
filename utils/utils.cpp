@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 21:28:42 by atable            #+#    #+#             */
-/*   Updated: 2021/07/05 21:09:58 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 12:03:22 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,22 @@ char * toCharStr( std::string str )
         buf[i] = str[i];
     buf[len] = '\0';
     return buf;
+}
+
+char * strcut( char * start, char * end, int size )
+{
+    if (!start || !end)
+        return NULL;
+    if (*start == '\0')
+        return NULL;
+    char * newStr = new char[size];
+    int i = 0;
+    while (start != end)
+    {
+        newStr[i] = *start;
+        start++;
+        i++;
+    }
+    newStr[i] = '\0';
+    return newStr;        
 }

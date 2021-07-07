@@ -3,12 +3,14 @@
 Serv::Serv( void )
 {
 	this->_port = 0;
+	this->_decodedBody = "";
 }
 
 Serv::Serv( int port, Inside & info )
 {
 	this->_port = port;
 	this->_servInfo = info;
+	this->_decodedBody = "";
 }
 
 Serv::Serv( const Serv& serv )
@@ -17,6 +19,7 @@ Serv::Serv( const Serv& serv )
 	this->_port = serv._port;
 	this->_request = serv._request;
 	this->_servInfo = serv._servInfo;
+	this->_decodedBody = serv._decodedBody;
 }
 
 Serv::~Serv( void )
@@ -27,6 +30,7 @@ Serv::~Serv( void )
 		it != this->_request.end(); it++)
 		this->closeSock(it->first);
 	this->_port = 0;
+	this->_decodedBody = "";
 }
 
 /**********************************************************
@@ -43,9 +47,15 @@ struct sockaddr_in & Serv::getAddress( void )
 	return this->_addr;
 }
 
-char * Serv::decodeChunkedBody( char * oldBody)
+std::string Serv::decodeChunkedBody( char * oldBody )
 {
-	return NULL;
+	char *chunkSizeEnd = strstr(oldBody, "\r\n");
+	char *chunkSize = strcut(oldBody, chunkSizeEnd, chunkSizeEnd - oldBody);
+	int size = std::atoi(chunkSize);
+	if (size == 0)
+		return "EOF";
+	std::string newBody(chunkSizeEnd + 2, strstr(chunkSizeEnd + 2, "\r\n"));
+	return newBody;
 }
 
 int Serv::init_request( int sock )
@@ -55,10 +65,17 @@ int Serv::init_request( int sock )
 	if ((request->getHeaders()).find("Transfer-Encoding") != request->getHeaders().end() &&
 		(request->getHeaders())["Transfer-Encoding"] == "chunked")
 	{
-		char *tmp = decodeChunkedBody(request->getBody());
-		request->setBody(tmp);
-	}		
-	this->_parseRequest[sock] = request;
+		std::string addBody = decodeChunkedBody(request->getBody());
+		if (addBody != "EOF")
+			this->_decodedBody += addBody;
+		else
+		{
+			request->setBody(const_cast<char*>((this->_decodedBody).c_str()));
+			this->_decodedBody = "";
+		}			
+	}
+	if (this->_decodedBody == "")	
+		this->_parseRequest[sock] = request;
 	return 0;
 }
 /**************************INIT****************************
@@ -162,7 +179,11 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 	{
 		std::string line;
 		while(getline(in, line))
+		{
+			std::cout << line << std::endl;
 			response_body << line << std::endl;
+		}
+			
 		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl;
 	}
 	// response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
@@ -181,8 +202,7 @@ int Serv::sendServer( int sock )
 	std::string str = response.write_response(this->_parseRequest[sock], this->_servInfo);// = response.write_response(&request, this->_config);
 	std::cout << str << std::endl;
 
-	// std::stringstream res = this->pages_to_stream("start_page.html");
-
+	// std::stringstream res = this->pages_to_stream("pages/error_pages/error400.html");
 	ret = send(sock, str.c_str(), str.length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/07 18:07:50 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/08 15:10:50 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,13 @@ std::string Response::get_content_type(const std::string file_name) {
         return "text/" + extension;
 }
 
-std::string Response::append_body(Request_info * request, std::string & respond, Inside & config) {
+std::string Response::append_body(Request_info * request, std::string & respond, std::string & filename) {
     char cwd[PATH_MAX];
     if (getcwd(cwd,  sizeof(cwd)) == NULL) {
         respond = append_message(respond, 500, (std::string &) "", request);
         return respond.append("\r\nInternal Error 500 get cwd\n");
     }
-    std::ifstream file(cwd + request->getTarget() + ".html");
+    std::ifstream file(filename.c_str());
     if (file.is_open()) {
         respond.append("\r\n");
         std::string line;
@@ -97,153 +97,113 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 }
 
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
-    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
-    {
-        char cwd[PATH_MAX];
-        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
-            respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 get cwd\n");
-        }
-        std::string cwd_string(cwd);
-        std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
-        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
-        std::ofstream myfile(cwd_string + "/" + root + "/" + index, std::fstream::out);
-        if (myfile.is_open()) {
-            myfile << request->getBody();
-            myfile.close();
-        }
-        else {
-            return respond.append("\r\nInternal Error 500 inside POST could not open file\n");
-        }
-
-        std::string stringOK("HTTP/1.1 201 CREATED\r\n");
-        stringOK.append(respond);
-        return respond = stringOK;
-    }
-    else if (config.getLocation().count(request->getTarget()))
-    {
-        respond = append_message(respond, 404, request->getTarget(), request);
-        return respond.append("\r\n404 Not Found\n");
-    }
-    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
+    if (config.getMethods().find(request->getMethod()) == config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return "";
+    
+    char cwd[PATH_MAX];
+    if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+        respond = append_message(respond, 500, (std::string &) "", request);
+        return respond.append("\r\nInternal Error 500 get cwd\n");
+    }
+    std::string cwd_string(cwd);
+    std::string root(config.getRoot());
+    std::string index(config.getIndex()[0]);
+    std::ofstream myfile(root + "/" + index, std::fstream::out);
+    if (myfile.is_open()) {
+        myfile << request->getBody();
+        myfile.close();
+    }
+    else {
+        return respond.append("\r\nInternal Error 500 inside POST could not open file\n");
+    }
+    std::string stringOK("HTTP/1.1 201 CREATED\r\n");
+    stringOK.append(respond);
+    return respond = stringOK;
 }
 
 std::string Response::DELETE_respond(Request_info * request, std::string & respond, Inside & config) {
-    if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
-    {
-        char cwd[PATH_MAX];
-        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
-            respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 get cwd\n");
-        }
-        std::string cwd_string(cwd);
-        std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
-        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
-        std::remove((cwd_string + "/" + root + "/" + index).c_str());
-
-        std::string stringOK("HTTP/1.1 200 OK\r\n");
-        return respond = stringOK.append(respond);
-    }
-    else if (config.getLocation().count(request->getTarget()))
-    {
-        respond = append_message(respond, 404, request->getTarget(), request);
-        return respond.append("\r\n404 Not Found\n");
-    }
-    else if (config.getMethods().find(request->getMethod()) != config.getMethods().end())
+    if (config.getMethods().find(request->getMethod()) == config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return NULL;
+    char cwd[PATH_MAX];
+    if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+        respond = append_message(respond, 500, (std::string &) "", request);
+        return respond.append("\r\nInternal Error 500 get cwd\n");
+    }
+     std::string cwd_string(cwd);
+    std::string root(config.getRoot());
+    std::string index(config.getIndex()[0]);
+    std::remove((root + "/" + index).c_str());
+
+    std::string stringOK("HTTP/1.1 200 OK\r\n");
+    return respond = stringOK.append(respond);
 }
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
 {
-    std::map<std::string, Inside> locationMap = config.getLocation();
-
-    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
-    {
-        std::string stringOK("HTTP/1.1 200 OK\r\n");
-        stringOK.append(respond);
-
-        return respond = stringOK;
-    }
-    else if (!locationMap.count(request->getTarget()))
-    {
-        respond = append_message(respond, 404, request->getTarget(), request);
-        return respond.append("\r\n404 Not Found\nlocation " + request->getTarget() + " not found\n");
-    }
-    else if (!locationMap[request->getTarget()].getMethods().count(request->getMethod()))
+    if (config.getMethods().find(request->getMethod()) == config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
-    }
-    return "";
+    }  
+    std::string stringOK("HTTP/1.1 200 OK\r\n");
+    stringOK.append(respond);
+    return respond = stringOK;
 }
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
-    std::map<std::string, Inside> locationMap = config.getLocation();
-    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
-        {
-        char cwd[PATH_MAX];
-        if (getcwd(cwd,  sizeof(cwd)) == NULL) {
-            respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 get cwd\n");
-        }
-
-        std::ifstream is(cwd + request->getTarget() + ".html", std::ifstream::binary);
-
-        int length;
-        if (is.is_open()) {
-            is.seekg (0, is.end);
-            length = is.tellg();
-            is.seekg (0, is.beg);
-            is.close();
-        }
-        else {
-            respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 ifstream open\n");
-        }
-        respond.append("Content-Length: ");
-        char *s = itoa(length);
-        respond.append(s);
-        free(s);
-        respond.append("\r\n");
-
-        respond.append("Content-Type: ");
-        respond.append(get_content_type(request->getTarget() + ".html")); //
-        respond.append("\r\n");
-
-        char buffer[40];
-        respond.append("Last-Modified: ");
-        respond.append( get_file_modif_time(request->getTarget().c_str(), buffer)); //
-        respond.append("\r\n");
-
-        append_body(request, respond, config);
-
-        std::string stringOK("HTTP/1.1 200 OK\r\n");
-        stringOK.append(respond);
-
-        return respond = stringOK;
-
-    }
-    else if (!locationMap.count(request->getTarget()))
-    {
-        respond = append_message(respond, 404, request->getTarget(), request);
-        return respond.append("\r\n404 Not Found\nlocation " + request->getTarget() + " not found\n");
-    }
-    else if (!locationMap[request->getTarget()].getMethods().count(request->getMethod()))
+    if (config.getMethods().find(request->getMethod()) == config.getMethods().end())
     {
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-    return "";
+
+    char cwd[PATH_MAX];
+    if (getcwd(cwd,  sizeof(cwd)) == NULL) {
+        respond = append_message(respond, 500, (std::string &) "", request);
+        return respond.append("\r\nInternal Error 500 get cwd\n");
+    }
+        
+    std::string path = config.getRoot() + "/" + config.getIndex()[0];
+    std::ifstream is(path, std::ifstream::binary);
+
+    int length;
+    if (is.is_open()) {
+        is.seekg (0, is.end);
+        length = is.tellg();
+        is.seekg (0, is.beg);
+        is.close();
+    } else {
+        respond = append_message(respond, 500, (std::string &) "", request);
+        return respond.append("\r\nInternal Error 500 ifstream open\n");
+    }
+    respond.append("Content-Length: ");
+    char *s = itoa(length);
+    respond.append(s);
+    free(s);
+    respond.append("\r\n");
+
+    respond.append("Content-Type: ");
+    respond.append(get_content_type(path)); //
+    respond.append("\r\n");
+
+    char buffer[40];
+    respond.append("Last-Modified: ");
+    respond.append( get_file_modif_time(path.c_str(), buffer)); //
+    respond.append("\r\n");
+
+    append_body(request, respond, path);
+
+    std::string stringOK("HTTP/1.1 200 OK\r\n");
+    stringOK.append(respond);
+
+    return respond = stringOK;
 }
 
 std::string Response::write_response(Request_info *request, Inside & config) {
@@ -256,11 +216,7 @@ std::string Response::write_response(Request_info *request, Inside & config) {
 
     std::map<std::string, Inside> locationMap = config.getLocation();
     std::vector<std::string> key;
-    for(std::map<std::string, Inside>::iterator it = locationMap.begin(); it != locationMap.end(); ++it) {
-        key.push_back(it->first);
-        std::cout << "Key: " << it->first << std::endl;
-    }
-
+    Inside locationConf;
 
     if (!request->isCorrect()) {
         respond = append_message(respond, 400, request->getTarget(), request);
@@ -270,17 +226,33 @@ std::string Response::write_response(Request_info *request, Inside & config) {
         respond = append_message(respond, 505, request->getTarget(), request);
         return respond.append("\r\nHTTP Version Not Supported 505\n");
     }
-     if (request->getMethod() == "HEAD")
-         respond = HEAD_respond(request, respond, config);
-     else if (request->getMethod() == "GET")
-        respond = GET_respond(request, respond, config);
-     else if (request->getMethod() == "DELETE")
-        respond = DELETE_respond(request, respond, config);
-     else if (request->getMethod() == "POST")
-         respond = POST_respond(request, respond, config);
-     else {
+    if (request->getTarget() != "/" && request->getTarget() != "/favicon.ico")
+    {
+        for(std::map<std::string, Inside>::iterator it = locationMap.begin(); it != locationMap.end(); ++it) {
+            key.push_back(it->first);
+            std::cout << "Key: " << it->first << std::endl;
+        }
+        if (locationMap.find(request->getTarget()) == locationMap.end())
+        {
+            respond = append_message(respond, 404, request->getTarget(), request);
+            return respond.append("\r\n404 Not Found\nlocation " + request->getTarget() + " not found\n");
+        }
+        locationConf = locationMap[request->getTarget()];
+    }
+    else
+        locationConf = config;
+    
+    if (request->getMethod() == "HEAD")
+        respond = HEAD_respond(request, respond, locationConf);
+    else if (request->getMethod() == "GET")
+        respond = GET_respond(request, respond, locationConf);
+    else if (request->getMethod() == "DELETE")
+        respond = DELETE_respond(request, respond, locationConf);
+    else if (request->getMethod() == "POST")
+        respond = POST_respond(request, respond, locationConf);
+    else {
         respond = append_message(respond, 501, request->getTarget(), request);
         respond.append("\r\n Not Implemented 501\n");
-     }
-     return respond;
+    }
+    return respond;
 }

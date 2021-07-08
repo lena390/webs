@@ -186,12 +186,27 @@ std::stringstream Serv::pages_to_stream(std::string filename)
 			
 		response_body << "<pre>" << "on port: " << buf << "</pre>" << std::endl;
 	}
-	// response_body << "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
+	// std::string dirName("");
+	// DIR *dir = opendir("/");
+	// dirName = "/" + dirName;
+	// response_body << "<!DOCTYPE html>\n<html>\n<head>\n<title>" + dirName + "</title>\n</head>\n<body>\n<h1>INDEX</h1>\n<p>\n";
+	// if (dir == NULL)
+	// {
+	// 	std::cout << RED << "ERROR" << RESET << std::endl;
+	// 	return res;
+	// }
+	// for(struct dirent *dirEntry = readdir(dir); dirEntry; dirEntry = readdir(dir))
+	// {
+	// 	response_body << "\t\t<p><a href=\"http://" + this->_servInfo.getListen().host + ":" <<
+	// 		this->_servInfo.getListen().port << dirName + "/" << std::string(dirEntry->d_name) << "\">" << std::string(dirEntry->d_name) << "</a></p>\n";
+	// }
+	// response_body << "</p>\n</body>\n</html>\n";	
+ 	// response_body << "<a href=\"https://127.0.0.1:8000\\tmp1\">tmp1</a>\r\n";
+	// response_body << "<a href=\"https://127.0.0.1:8000\\tmp2\">tmp2</a>\r\n";
 	res << "HTTP/1.1 200 OK\r\n" << "Version: HTTP/1.1\r\n" << "Content-Type: text/html; charset=utf-8\r\n" << "Content-Length: "
 	<< response_body.str().length() << "\r\n\r\n" << response_body.str();
 	// closedir(dir);
 	return res;
-	
 }
 
 int Serv::sendServer( int sock )
@@ -200,9 +215,9 @@ int Serv::sendServer( int sock )
 
 	Response response;
 	std::string str = response.write_response(this->_parseRequest[sock], this->_servInfo);// = response.write_response(&request, this->_config);
-	std::cout << str << std::endl;
+	std::cout << "Response:" << std::endl; 
+	std::cout << GREEN << str << RESET << std::endl;
 
-	// std::stringstream res = this->pages_to_stream("pages/error_pages/error400.html");
 	ret = send(sock, str.c_str(), str.length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;

@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:31:08 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 20:42:12 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/08 12:23:29 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         false_reason_ = "no method found\n";
         return;
     }
-    method_ = strndup(start, str_occurrence - start - 1);//
+    method_ = std::string(start, str_occurrence - start - 1);
     start = str_occurrence + 1;
     if (start == NULL) {
         correct_ = false;
@@ -40,9 +40,10 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
             return;
         }
     }
-    request_target_ = strndup(start - 1, str_occurrence - start + 1);
-    if (request_target_ == "/" || request_target_ == "/favicon.ico") {
-        request_target_ = "/start_page";
+    request_target_ = std::string(start, str_occurrence - start);
+    if (request_target_ == "" || request_target_ == "favicon.ico") {
+        request_target_ = "pages/index/start_page.html";
+//        request_target_ = "/home/lena/CLionProjects/webs111/start_page.html";
     }
     ///parsing http version
     start = strstr(start, "/") + 1;
@@ -52,19 +53,19 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
         false_reason_ = "request is incomplete\n";
         return;
     }
-    HTTP_version_ = strndup(start, str_occurrence - start);
+    HTTP_version_ = std::string(start, str_occurrence - start);
 
      ///parsing headers
     while (strstr(start, ": ")) {
-        char* key;
-        char* value;
+        std::string key;
+        std::string value;
 
         str_occurrence = strstr(start, ": ");
-        key = strndup(start, str_occurrence - start);
+        key = std::string(start, str_occurrence - start);
 
         start = str_occurrence + 2;
         str_occurrence = strstr(start, "\r\n");
-        value = strndup(start, str_occurrence - start);
+        value = std::string(start, str_occurrence - start);
         start = str_occurrence + 2;
         headers_[key] = value;
        // free(key);
@@ -103,4 +104,10 @@ void Request_info::setBody( char * newBody )
 {
     delete [] this->body_;
     this->body_ = newBody;
+}
+
+Request_info::~Request_info( void )
+{
+    this->headers_.clear();
+    delete [] this->body_;
 }

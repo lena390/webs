@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:30:30 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 20:41:18 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 19:55:37 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Request_info {
         Request_info();
         Request_info(char *buffer);
         Request_info(const Request_info &);
-        ~Request_info() { headers_.clear(); }
+        ~Request_info();
         Request_info & operator=(const Request_info &) { return *this; }
 
         bool isCorrect() const { return correct_;}

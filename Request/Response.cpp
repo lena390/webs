@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/06 22:27:42 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/07 18:07:50 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,6 @@ std::string Response::HEAD_respond(Request_info * request, std::string & respond
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)
 {
     std::map<std::string, Inside> locationMap = config.getLocation();
-
     if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
         {
         char cwd[PATH_MAX];

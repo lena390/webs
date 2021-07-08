@@ -152,7 +152,6 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-
     // if (config.getAutoIndex() == true)
     // {
     //     struct stat path_stat;

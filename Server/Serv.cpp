@@ -213,14 +213,12 @@ int Serv::sendServer( int sock )
 {
 	int ret;
 
-	// Response response;
-	// std::string str = response.write_response(this->_parseRequest[sock], this->_servInfo);// = response.write_response(&request, this->_config);
-	// // std::cout << str << std::endl;
+	Response response;
+	std::string str = response.write_response(this->_parseRequest[sock], this->_servInfo);// = response.write_response(&request, this->_config);
+	std::cout << "Response:" << std::endl; 
+	std::cout << GREEN << str << RESET << std::endl;
 
-	std::stringstream res = this->pages_to_stream("pages/error_pages/error404.html");
-	// str += "<a href=\"https://127.0.0.1:8000\\Request\\TMPFolder\\start_page.html\">Autoindex check</a>";
-	// std::string str = autoindex("pages", this->_servInfo.getListen().host, this->_servInfo.getListen().port);
-	ret = send(sock, res.str().c_str(), res.str().length(), 0);
+	ret = send(sock, str.c_str(), str.length(), 0);
 	if (ret < 0)
 		std::cerr << RED << "Error send()" << RESET << std::endl;
 	else

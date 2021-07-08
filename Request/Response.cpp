@@ -105,7 +105,9 @@ std::string Response::POST_respond(Request_info * request, std::string & respond
             return respond.append("\r\nInternal Error 500 get cwd\n");
         }
         std::string cwd_string(cwd);
-        std::ofstream myfile(cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget(), std::fstream::out);
+        std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
+        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
+        std::ofstream myfile(cwd_string + "/" + root + "/" + index, std::fstream::out);
         if (myfile.is_open()) {
             myfile << request->getBody();
             myfile.close();
@@ -140,20 +142,12 @@ std::string Response::DELETE_respond(Request_info * request, std::string & respo
             return respond.append("\r\nInternal Error 500 get cwd\n");
         }
         std::string cwd_string(cwd);
-        std::ofstream myfile(cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget());
-        if (myfile.is_open()) {
-            myfile << "";
-            myfile.close();
-        }
-        else {
-            return respond.append("\r\nInternal Error 500 inside DELETE\n");
-        }
-//        char c[1000] = (cwd_string + "/" + config.getLocation().find(request->getTarget())->second.getRoot() + request->getTarget()).c_str();
-//        std::remove(c);
-
+        std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
+        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
+        std::remove((cwd_string + "/" + root + "/" + index).c_str());
 
         std::string stringOK("HTTP/1.1 200 OK\r\n");
-        return respond = stringOK;
+        return respond = stringOK.append(respond);
     }
     else if (config.getLocation().count(request->getTarget()))
     {
@@ -170,7 +164,26 @@ std::string Response::DELETE_respond(Request_info * request, std::string & respo
 
 std::string Response::HEAD_respond(Request_info * request, std::string & respond, Inside & config)
 {
-    return NULL;
+    std::map<std::string, Inside> locationMap = config.getLocation();
+
+    if (locationMap.count(request->getTarget()) && locationMap[request->getTarget()].getMethods().count(request->getMethod()))
+    {
+        std::string stringOK("HTTP/1.1 200 OK\r\n");
+        stringOK.append(respond);
+
+        return respond = stringOK;
+    }
+    else if (!locationMap.count(request->getTarget()))
+    {
+        respond = append_message(respond, 404, request->getTarget(), request);
+        return respond.append("\r\n404 Not Found\nlocation " + request->getTarget() + " not found\n");
+    }
+    else if (!locationMap[request->getTarget()].getMethods().count(request->getMethod()))
+    {
+        respond = append_message(respond, 405, request->getTarget(), request);
+        return respond.append("\r\n405 Method Not Allowed\n");
+    }
+    return "";
 }
 
 std::string Response::GET_respond(Request_info * request, std::string & respond, Inside & config)

@@ -79,7 +79,11 @@ std::string Response::append_body(Request_info * request, std::string & respond,
         respond = append_message(respond, 500, (std::string &) "", request);
         return respond.append("\r\nInternal Error 500 get cwd\n");
     }
-    std::ifstream file(cwd + request->getTarget() + ".html");
+    std::string cwd_str(cwd);
+    std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
+    std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[1]);
+    std::string fullAddr(cwd_str + "/" + root + "/" + index);
+    std::ifstream file(fullAddr);
     if (file.is_open()) {
         respond.append("\r\n");
         std::string line;
@@ -99,6 +103,8 @@ std::string Response::append_body(Request_info * request, std::string & respond,
 std::string Response::POST_respond(Request_info * request, std::string & respond, Inside & config) {
     if (config.getLocation().count(request->getTarget()) && config.getMethods().find(request->getMethod()) != config.getMethods().end()) //
     {
+        if (request->getBody_size() > config.getClientBodySize())
+            return respond.append("\r\nInternal Error 413 Request Entity Too Large\n");
         char cwd[PATH_MAX];
         if (getcwd(cwd,  sizeof(cwd)) == NULL) {
             respond = append_message(respond, 500, (std::string &) "", request);
@@ -198,8 +204,9 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         }
         std::string cwd_str(cwd);
         std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
-        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
-        std::ifstream is(cwd_str + "/" + root + "/" + index, std::ifstream::binary);
+        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[1]);
+        std::string fullAddr(cwd_str + "/" + root + "/" + index);
+        std::ifstream is(fullAddr, std::ifstream::binary);
 
         int length;
         if (is.is_open()) {
@@ -210,7 +217,7 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         }
         else {
             respond = append_message(respond, 500, (std::string &) "", request);
-            return respond.append("\r\nInternal Error 500 ifstream open\n");
+            return respond.append("\r\nInternal Error 500 ifstream open\n" + fullAddr + "\n");
         }
         respond.append("Content-Length: ");
         char *s = itoa(length);

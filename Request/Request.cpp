@@ -40,10 +40,9 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
             return;
         }
     }
-    request_target_ = std::string(start, str_occurrence - start);
-    if (request_target_ == "" || request_target_ == "favicon.ico") {
-        request_target_ = "pages/index/start_page.html";
-//        request_target_ = "/home/lena/CLionProjects/webs111/start_page.html";
+    request_target_ = std::string(start - 1, str_occurrence - start + 1);
+    if (request_target_ == "/" || request_target_ == "/favicon.ico") {
+        request_target_ = "/start_page";
     }
     ///parsing http version
     start = strstr(start, "/") + 1;
@@ -73,6 +72,7 @@ Request_info::Request_info(char *buffer) : correct_(true), request_(buffer) {
     }
     start += 2;
     str_occurrence = strchr(start, '\0');
+    body_size_ = str_occurrence - start;
     body_ = strndup(start, str_occurrence - start);
 }
 

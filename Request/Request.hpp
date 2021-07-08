@@ -29,6 +29,7 @@ class Request_info {
         std::map<std::string, std::string> headers_;
         char* body_;
         char* request_;
+        int body_size_;
     
     public:
         Request_info();
@@ -46,6 +47,7 @@ class Request_info {
         std::map<std::string, std::string> getHeaders() { return headers_; }
         char* getBody() const { return body_; }
         char* getRequest() const { return request_; }
+        int getBody_size() const { return body_size_; }
 
         void setQwery( void );
         void setBody( char * );

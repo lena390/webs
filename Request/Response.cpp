@@ -6,9 +6,6 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/08 17:19:29 by atable           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "Response.hpp"
 #include "../parse/Inside.hpp"

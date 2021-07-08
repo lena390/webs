@@ -18,7 +18,6 @@ class Response
         char * get_formatted_date(char * buffer);
         
         std::string get_content_type(const std::string file_name);
-//        std::string append_body(Request_info * request, std::string & respond, Inside & config);
         std::string HEAD_respond(Request_info * request, std::string & respond, Inside & config);
         std::string GET_respond(Request_info * request, std::string & respond, Inside & config);
         std::string POST_respond(Request_info * request, std::string & respond, Inside & config);

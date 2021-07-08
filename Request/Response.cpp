@@ -201,9 +201,18 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
     return respond = stringOK;
 }
 
+// std::string error_message( int error_status, Inside & config, std::string & message )
+// {
+//     if (config.getErrorPage().empty() ||
+//         config.getErrorPage().find(error_status) == config.getErrorPage().end())
+//         return message + itoa(error_status);
+    
+    
+// }
+
 std::string Response::write_response(Request_info *request, Inside & config) {
     std::string respond;
-    respond.append("Server: Puk(puk)\r\n");
+    respond.append("Server:" + config.getServerName()[0] + "\r\n");
     respond.append("Content-Language: en\r\n");
     char buffer[38];
     respond.append("Date: ");

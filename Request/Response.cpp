@@ -153,6 +153,13 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         return respond.append("\r\n405 Method Not Allowed\n");
     }
 
+    // if (config.getAutoIndex() == true)
+    // {
+    //     struct stat path_stat;
+    //     stat(request->getTarget().c_str(), &path_stat);
+    //     if (S_IFDIR)
+    //         return respond.append(autoindex(request->getTarget(), config.getListen().host, config.getListen().port));
+    // }
     char cwd[PATH_MAX];
     if (getcwd(cwd,  sizeof(cwd)) == NULL) {
         respond = append_message(respond, 500, (std::string &) "", request);

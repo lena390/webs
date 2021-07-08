@@ -197,8 +197,10 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
             respond = append_message(respond, 500, (std::string &) "", request);
             return respond.append("\r\nInternal Error 500 get cwd\n");
         }
-
-        std::ifstream is(cwd + request->getTarget() + ".html", std::ifstream::binary);
+        std::string cwd_str(cwd);
+        std::string root(config.getLocation().find(request->getTarget())->second.getRoot());
+        std::string index(config.getLocation().find(request->getTarget())->second.getIndex()[0]);
+        std::ifstream is(cwd_str + "/" + root + "/" + index, std::ifstream::binary);
 
         int length;
         if (is.is_open()) {

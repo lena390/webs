@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/07 17:47:27 by atable            #+#    #+#             */
-/*   Updated: 2021/07/07 18:55:33 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/08 16:06:24 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ std::string autoindex( std::string path, std::string host, int port)
     std::stringstream res;
     std::string dirName(path);
 	DIR *dir = opendir(path.c_str());
-	// dirName = "/" + dirName;
 	response_body << "<!DOCTYPE html>\n<html>\n<head>\n<title>" + dirName + "</title>\n</head>\n<body>\n<h1>INDEX</h1>\n<p>\n";
 	if (dir == NULL)
 	{

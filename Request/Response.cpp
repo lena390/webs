@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/08 15:35:53 by atable            #+#    #+#             */
-/*   Updated: 2021/07/08 15:55:13 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/08 17:19:29 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,13 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
         respond = append_message(respond, 405, request->getTarget(), request);
         return respond.append("\r\n405 Method Not Allowed\n");
     }
-
+    // if (config.getAutoIndex() == true)
+    // {
+    //     struct stat path_stat;
+    //     stat(request->getTarget().c_str(), &path_stat);
+    //     if (S_IFDIR)
+    //         return respond.append(autoindex(request->getTarget(), config.getListen().host, config.getListen().port));
+    // }
     char cwd[PATH_MAX];
     if (getcwd(cwd,  sizeof(cwd)) == NULL) {
         respond = append_message(respond, 500, (std::string &) "", request);
@@ -206,9 +212,18 @@ std::string Response::GET_respond(Request_info * request, std::string & respond,
     return respond = stringOK;
 }
 
+// std::string error_message( int error_status, Inside & config, std::string & message )
+// {
+//     if (config.getErrorPage().empty() ||
+//         config.getErrorPage().find(error_status) == config.getErrorPage().end())
+//         return message + itoa(error_status);
+    
+    
+// }
+
 std::string Response::write_response(Request_info *request, Inside & config) {
     std::string respond;
-    respond.append("Server: Puk(puk)\r\n");
+    respond.append("Server:" + config.getServerName()[0] + "\r\n");
     respond.append("Content-Language: en\r\n");
     char buffer[38];
     respond.append("Date: ");

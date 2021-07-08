@@ -6,7 +6,7 @@
 /*   By: atable <atable@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/09 17:51:40 by atable            #+#    #+#             */
-/*   Updated: 2021/07/02 13:06:08 by atable           ###   ########.fr       */
+/*   Updated: 2021/07/08 15:51:42 by atable           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class Response
         ~Response();
         std::string write_response(Request_info *request, Inside & config);
 
-        std::string append_body(Request_info *request, std::string &respond, Inside &config);
+        std::string append_body(Request_info *request, std::string &respond, std::string &);
 };
 
 #endif
